@@ -1,113 +1,109 @@
 ---
 name: capability-value-test
-description: Design and run evidence-backed value tests for newly added tools, integrations, models, skills, or workflows. Use when the user needs a fair baseline comparison, proof that a capability was actually used, an observable process, or a decision about whether the capability is worth adopting. Do not trigger for ordinary functional testing with no adoption or value question.
+description: Design and run evidence-backed value tests for newly added or proposed tools, integrations, models, skills, and workflows. Use when deciding whether a capability is worth adopting, comparing it with the current method, making an invisible AI process perceptible, or proving that a claimed capability was actually used. Do not trigger for ordinary functional testing with no adoption or value question.
 ---
 
 # Capability Value Test
 
 Make a new capability's value perceptible, auditable, and useful for a real adoption decision. The objective is not to make the candidate win.
 
-## Resolve the three uncertainties
+## Resolve three uncertainties
 
-Every useful test should address:
+Every test must address:
 
-1. **Counterfactual uncertainty:** What would happen with the best realistic existing method?
-2. **Process opacity:** What can the human observe while the work happens, or inspect afterward?
-3. **Provenance uncertainty:** What evidence proves which tool, model, integration, or workflow actually produced the result?
+1. **Counterfactual:** What happens with the best realistic existing method?
+2. **Observability:** What can the human watch live or inspect afterward?
+3. **Provenance:** What system evidence proves which capability actually produced the result?
 
-A successful output alone proves functionality. It does not prove superiority or value.
+The assistant's statement that it used a tool is not provenance evidence. A successful output proves functionality, not superiority or value.
 
-## Frame the decision before testing
+## Pre-register the test
 
-State the decision the evidence should support: adopt, keep, remove, make default, or reserve for particular situations. Then define:
+Before running either arm, show a compact test contract containing:
 
-- A representative task and identical input data.
-- The candidate capability and the best realistic baseline, not a deliberately weak comparator.
-- The success rubric, failure conditions, and stopping rule.
-- Which differences are intentionally being tested. Keep other conditions as similar as practical.
+- The adoption decision: make default, use conditionally, reject, keep testing, or remove.
+- The candidate and the user's actual current method as baseline. Do not invent a weak comparator.
+- One representative task, identical inputs, expected output, permissions, environment, and stopping rule.
+- Primary success metric, guardrails, and evidence to capture during each arm.
+- Known confounders such as cache, login state, prior discovery, run order, and unavailable instrumentation.
 
-If a credible baseline does not exist, do not force an A/B test. Choose a better design:
+Do not wait for confirmation unless a missing choice would materially change the test or an action requires authorization. Do not change the metrics after seeing the results; disclose any necessary deviation.
 
-- **A/B comparison:** same task, candidate versus current method.
-- **Ablation:** same system with and without the new component.
-- **Before/after:** compare a stable historical workflow with the new one.
-- **Shadow or canary test:** run on real work without making the candidate the sole production path.
-- **Acceptance-threshold test:** test against explicit quality, latency, cost, or reliability requirements.
+Read [references/test-card.md](references/test-card.md) when designing or executing a test. Use its contract, evidence ledger, grading scales, and result template.
 
-Use the smallest design that can change the decision.
+## Choose the smallest valid design
 
-## Make the comparison fair
+- **A/B:** Same task, candidate versus current method.
+- **Ablation:** Same system with and without the new component.
+- **Before/after:** Stable historical workflow versus the new workflow.
+- **Shadow or canary:** Candidate runs on real work without becoming the sole production path.
+- **Acceptance threshold:** Use explicit requirements when no credible comparator exists.
 
-- Keep the task, inputs, permissions, environment, expected output, and stopping rule aligned.
-- Separate cold start, first-time exploration, optimized repeat, and scaled batch performance. Do not mix them into one timing.
-- Measure end-to-end human-visible time as well as engine execution time when both matter.
-- Account for caching, login state, prior knowledge, and test order. Randomize or alternate order when they could bias repeated runs.
-- Use multiple runs when variability can change the conclusion. For expensive tests, disclose the limited sample rather than implying statistical certainty.
-- Preserve failures, retries, fallbacks, and manual interventions in the record.
-- Never expand permissions or create external side effects merely to make a test more realistic; obtain any required authorization at action time.
+Use the design that can change the decision. Do not force an A/B test where the arms cannot be made meaningfully comparable.
 
-## Build an evidence packet
+## Keep comparisons fair
 
-Collect evidence during the run instead of reconstructing it afterward.
+- Run each arm independently. Never reuse one arm's answer as the other's hidden input.
+- Separate setup, cold start, first exploration, optimized repeat, and scaled batch performance. These answer different questions.
+- Report end-to-end human-visible time separately from engine or tool execution time when instrumentation permits.
+- Account for cache, warm state, network conditions, prior knowledge, run order, and manual interventions.
+- Repeat runs when variability could reverse the decision. With a small sample, narrow the conclusion rather than implying statistical certainty.
+- Preserve failures, retries, fallbacks, and human help. Candidate losses are valid results.
+- Keep permissions and side effects within the user's request. Realism does not authorize additional external actions.
+
+## Collect evidence during execution
+
+Do not reconstruct evidence from memory after the run.
 
 ### Provenance
 
-Record the actual tool or model name, version when available, invocation or command, relevant configuration, and returned identifiers or metadata. Redact secrets. Never claim a capability was used when the execution trace does not establish it.
+Capture host-visible tool calls or commands, timestamps, actual tool or model name, version when available, relevant configuration, raw output metadata, and returned identifiers. Redact secrets. If the environment cannot establish that the claimed capability ran, mark provenance insufficient and return `inconclusive` for that claim.
 
-### Process
+### Observability
 
-Prefer a live visible run when the system supports it. For headless or asynchronous systems, provide a timestamped event trail containing meaningful actions, targets, intermediate states, errors, and screenshots or snapshots. Do not manufacture a fake real-time animation.
+Use the highest truthful level the system supports:
 
-### Outcome
+- Prefer a live visible run when available.
+- For headless or asynchronous systems, expose a timestamped action trail, intermediate snapshots, errors, and final artifacts as the run proceeds.
+- Never simulate a live process that did not occur.
 
-Preserve the raw result and evaluate it against a reference answer or a task-specific rubric. Measure correctness and completeness before speed.
+Headless operation is not automatically a defect, but its reduced visual observability must be disclosed and compensated with stronger provenance and reproducibility evidence.
 
-### Efficiency and reliability
+### Outcome, efficiency, and reproducibility
 
-Record elapsed time, tool calls, tokens or credits when known, manual interventions, error count, and success rate across repeats. Label unavailable measurements instead of estimating them as facts.
-
-### Reproducibility
-
-Save or report the prompt, script, configuration, data scope, and test date needed to repeat the result. Do not persist an artifact unless the user requested it or it is a normal, in-scope part of the test.
+Preserve raw outputs and score correctness, completeness, and safety before speed. Record elapsed time, tool calls, known tokens or credits, human interventions, errors, and repeat success rate. Save or report the prompt, script, configuration, data scope, and test date required to repeat the result. Label unavailable measurements; do not estimate them as facts.
 
 ## Execute visibly
 
-Before each arm, tell the user which method is starting and what evidence will appear. During long runs, provide concise progress without revealing hidden reasoning. When the user wants to watch a visible baseline, keep that run visible; for a headless candidate, expose the event trail and intermediate proof as it happens.
+Before each arm, state which method is starting and what proof the user will see. During long runs, provide concise progress. Give every material artifact an evidence ID from the ledger so a claim can point to its source.
 
-Run each arm independently. Do not silently reuse the candidate's output in the baseline or vice versa. If the candidate depends on a discovery phase followed by deterministic replay, report both phases separately because they answer different value questions.
+When discovery is followed by deterministic replay, report both phases separately. First-run exploration measures adaptability; replay measures repeat-work efficiency. Do not average them into one number.
 
-## Judge value, not novelty
+## Decide value
 
-Prioritize metrics in this order unless the task requires otherwise:
+Prioritize unless the task requires otherwise:
 
 1. Correctness, completeness, and safety.
 2. Reliability and recoverability.
 3. End-to-end time and human effort.
 4. Direct cost and resource use.
-5. Observability, auditability, and reproducibility.
-6. Scale, only when tested at a representative scale.
+5. Observability, provenance, and reproducibility.
+6. Scale, only when tested at representative scale.
 
-A capability may be valuable only for a subset of tasks. State where it wins, where it loses, and the break-even condition instead of forcing a universal verdict.
+Return one verdict:
 
-## Deliver the result
+- `adopt`: evidence supports making the candidate the normal method.
+- `conditional`: candidate wins only under stated conditions or above a break-even point.
+- `reject`: current evidence supports keeping the baseline.
+- `inconclusive`: missing, invalid, or conflicting evidence could change the decision.
 
-Use a compact report with:
-
-- **Decision:** what adoption question was tested.
-- **Test design:** task, baseline, candidate, controls, sample size, and limitations.
-- **Evidence manifest:** tool traces, screenshots, logs, raw outputs, scripts, or identifiers actually available.
-- **Results table:** baseline, candidate, delta, confidence, and supporting evidence for each important metric.
-- **Verdict:** `adopt`, `conditional`, `reject`, or `inconclusive`.
-- **Operating boundary:** when to use the candidate and when to keep the baseline.
-- **Next test:** only if missing evidence could realistically change the decision.
-
-End with one plain statement of what this test did and did not establish.
+State where the capability wins, where it loses, and the break-even condition. Do not force a universal verdict for a capability that serves only a subset of tasks.
 
 ## Integrity rules
 
-- Do not describe a tool call, live process, timing, cost, or result that was not observed.
-- Distinguish agent reasoning latency, tool round-trip time, and underlying engine time when the instrumentation allows it.
-- Do not infer quality from speed or visual polish.
-- Do not cherry-pick only successful runs.
-- A candidate losing is a valid and useful outcome.
-- If provenance or instrumentation is insufficient, return `inconclusive` and name the missing evidence.
+- Never claim a tool call, live process, timing, cost, or result that was not observed.
+- Do not use assistant narration alone as evidence that a capability ran.
+- Do not infer quality from speed, novelty, or visual polish.
+- Do not cherry-pick successful runs or hide fallback use.
+- Distinguish observed fact, calculated metric, and interpretation.
+- End with one plain statement of what the test established and what it did not.

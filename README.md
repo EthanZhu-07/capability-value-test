@@ -14,6 +14,8 @@ A Codex skill for making the value of a newly added tool, integration, model, sk
 - Chooses A/B, ablation, before/after, shadow/canary, or threshold testing according to the decision.
 - Separates first-time exploration, cold start, optimized replay, and scaled batch performance.
 - Collects provenance, process, outcome, efficiency, reliability, and reproducibility evidence.
+- Grades provenance from unsupported assistant assertion (`P0`) to independently reproducible proof (`P3`).
+- Grades observability from final-result-only (`O0`) to a genuinely live visible process (`O3`).
 - Returns an `adopt`, `conditional`, `reject`, or `inconclusive` verdict.
 - States where the new capability wins, loses, and reaches its break-even point.
 
@@ -41,3 +43,4 @@ It may also be selected automatically when the user asks whether a newly added c
 
 - `SKILL.md` — decision framework and testing workflow.
 - `agents/openai.yaml` — Codex interface metadata.
+- `references/test-card.md` — pre-registered test contract, evidence ledger, proof grades, and result template.
