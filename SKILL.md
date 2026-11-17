@@ -1,109 +1,226 @@
 ---
 name: capability-value-test
-description: Design and run evidence-backed value tests for newly added or proposed tools, integrations, models, skills, and workflows. Use when deciding whether a capability is worth adopting, comparing it with the current method, making an invisible AI process perceptible, or proving that a claimed capability was actually used. Do not trigger for ordinary functional testing with no adoption or value question.
+description: Design and run a visual A/B test for a new AI capability. Use when a user wants proof that a Skill, model, plugin, MCP server, browser, or tool was invoked and wants to compare its quality, time, tokens, or cost with the current method. Requires plan approval and delivers an HTML report.
 ---
 
 # Capability Value Test
 
-Make a new capability's value perceptible, auditable, and useful for a real adoption decision. The objective is not to make the candidate win.
+Turn “Is this new capability actually valuable?” into a small experiment the user can inspect rather than a claim they must trust.
 
-## Resolve three uncertainties
+Deliver a standalone HTML report that shows:
 
-Every test must address:
+- whether the candidate capability was verifiably invoked;
+- how the current method and candidate performed the same real task;
+- how their result quality and end-to-end time compare;
+- token usage and cost when the host actually exposes them;
+- where the candidate is useful, where it is not, and whether to adopt it.
 
-1. **Counterfactual:** What happens with the best realistic existing method?
-2. **Observability:** What can the human watch live or inspect afterward?
-3. **Provenance:** What system evidence proves which capability actually produced the result?
+One run provides directional evidence only. Never present it as universal proof.
 
-The assistant's statement that it used a tool is not provenance evidence. A successful output proves functionality, not superiority or value.
+## Use this Skill when
 
-## Pre-register the test
+- a user has added a new Skill, model, plugin, MCP server, browser, open-source tool, or workflow;
+- the capability operates partly or entirely out of sight;
+- the user wants to compare it with their existing method;
+- the user asks whether it saves time, tokens, money, or improves the result;
+- the user wants an HTML artifact that visualizes the process and conclusion.
 
-Before running either arm, show a compact test contract containing:
+Do not use it for ordinary “does this function work?” checks, formal statistical experiments, or comparisons where the two methods cannot perform the same task.
 
-- The adoption decision: make default, use conditionally, reject, keep testing, or remove.
-- The candidate and the user's actual current method as baseline. Do not invent a weak comparator.
-- One representative task, identical inputs, expected output, permissions, environment, and stopping rule.
-- Primary success metric, guardrails, and evidence to capture during each arm.
-- Known confounders such as cache, login state, prior discovery, run order, and unavailable instrumentation.
+## Minimum inputs
 
-Do not wait for confirmation unless a missing choice would materially change the test or an action requires authorization. Do not change the metrics after seeing the results; disclose any necessary deviation.
+Determine four things:
 
-Read [references/test-card.md](references/test-card.md) when designing or executing a test. Use its contract, evidence ledger, grading scales, and result template.
+1. **Candidate** — the newly added capability.
+2. **Baseline** — the user's real current method.
+3. **Representative task** — one real task both methods can complete.
+4. **Primary value question** — usually quality, elapsed time, tokens, or cost.
 
-## Choose the smallest valid design
+Infer these from the conversation and environment when reliable. If a missing choice would materially change the test, ask one combined question instead of interviewing the user field by field. If no baseline is supplied, propose a realistic one.
 
-- **A/B:** Same task, candidate versus current method.
-- **Ablation:** Same system with and without the new component.
-- **Before/after:** Stable historical workflow versus the new workflow.
-- **Shadow or canary:** Candidate runs on real work without becoming the sole production path.
-- **Acceptance threshold:** Use explicit requirements when no credible comparator exists.
+## Invariants
 
-Use the design that can change the decision. Do not force an A/B test where the arms cannot be made meaningfully comparable.
+- Give both arms the same task, inputs, goal, output requirements, and stopping rule.
+- Execute each arm independently. Do not pass one arm's answer to the other.
+- An assistant statement such as “I used the tool” is not proof of invocation.
+- Invocation proof must come from host-visible tool calls, commands, logs, task metadata, or raw outputs that identify the capability.
+- Never fabricate time, tokens, cost, logs, screenshots, commands, or execution events.
+- Display unavailable metrics as “Not available”; never convert missing data to zero.
+- Do not present a reconstructed headless timeline as a live recording. Label it as an execution record.
+- Normal authorization rules still apply to login, payment, submission, deletion, communication, or other side effects.
+- Use the user's language for the test plan, report content, and final response.
 
-## Keep comparisons fair
+## Workflow
 
-- Run each arm independently. Never reuse one arm's answer as the other's hidden input.
-- Separate setup, cold start, first exploration, optimized repeat, and scaled batch performance. These answer different questions.
-- Report end-to-end human-visible time separately from engine or tool execution time when instrumentation permits.
-- Account for cache, warm state, network conditions, prior knowledge, run order, and manual interventions.
-- Repeat runs when variability could reverse the decision. With a small sample, narrow the conclusion rather than implying statistical certainty.
-- Preserve failures, retries, fallbacks, and human help. Candidate losses are valid results.
-- Keep permissions and side effects within the user's request. Realism does not authorize additional external actions.
+### 1. Design the experiment
 
-## Collect evidence during execution
+Create a compact experiment plan containing:
 
-Do not reconstruct evidence from memory after the run.
+```text
+Candidate:
+Baseline:
+Shared task:
+Input and expected output:
+Primary metric:
+Required metrics: result quality, end-to-end elapsed time
+Optional metrics: tokens, cost
+Invocation evidence expected from each arm:
+Known limitations:
+Stopping rule:
+```
 
-### Provenance
+Default to one run per arm. This is an MVP value check, not a statistical benchmark.
 
-Capture host-visible tool calls or commands, timestamps, actual tool or model name, version when available, relevant configuration, raw output metadata, and returned identifiers. Redact secrets. If the environment cannot establish that the claimed capability ran, mark provenance insufficient and return `inconclusive` for that claim.
+If a fair A/B comparison is impossible, explain why and revise the task or baseline before requesting approval. Do not manufacture a comparator.
 
-### Observability
+### 2. Obtain human approval
 
-Use the highest truthful level the system supports:
+Show the complete experiment plan before executing either arm.
 
-- Prefer a live visible run when available.
-- For headless or asynchronous systems, expose a timestamped action trail, intermediate snapshots, errors, and final artifacts as the run proceeds.
-- Never simulate a live process that did not occur.
+Do not begin the baseline or candidate run until the user explicitly approves the plan with language such as “approved,” “run it,” or “use this design.”
 
-Headless operation is not automatically a defect, but its reduced visual observability must be disclosed and compensated with stronger provenance and reproducibility evidence.
+If the user rejects or changes the plan:
 
-### Outcome, efficiency, and reproducibility
+1. incorporate the feedback;
+2. show the revised complete plan;
+3. request approval again;
+4. never apply approval for an earlier version to the revised design.
 
-Preserve raw outputs and score correctness, completeness, and safety before speed. Record elapsed time, tool calls, known tokens or credits, human interventions, errors, and repeat success rate. Save or report the prompt, script, configuration, data scope, and test date required to repeat the result. Label unavailable measurements; do not estimate them as facts.
+Approval of the experiment design does not replace action-time authorization required for consequential operations.
 
-## Execute visibly
+### 3. Execute the baseline
 
-Before each arm, state which method is starting and what proof the user will see. During long runs, provide concise progress. Give every material artifact an evidence ID from the ledger so a claim can point to its source.
+Tell the user that the baseline run is starting.
 
-When discovery is followed by deterministic replay, report both phases separately. First-run exploration measures adaptability; replay measures repeat-work efficiency. Do not average them into one number.
+Capture only information actually observed:
 
-## Decide value
+- method name and available version/configuration;
+- start and end timestamps;
+- end-to-end elapsed seconds;
+- three to eight meaningful process steps;
+- invocation evidence: tool call, command, log, task metadata, or raw output;
+- final result summary;
+- optional screenshot or evidence file;
+- tokens and cost only when the host reports them.
 
-Prioritize unless the task requires otherwise:
+### 4. Execute the candidate
 
-1. Correctness, completeness, and safety.
-2. Reliability and recoverability.
-3. End-to-end time and human effort.
-4. Direct cost and resource use.
-5. Observability, provenance, and reproducibility.
-6. Scale, only when tested at representative scale.
+Tell the user that the candidate run is starting. Capture the same fields as the baseline.
 
-Return one verdict:
+The evidence must identify the candidate by its real tool, model, Skill, command, or integration name. If no system evidence connects the candidate to the execution, mark the invocation as unverified.
 
-- `adopt`: evidence supports making the candidate the normal method.
-- `conditional`: candidate wins only under stated conditions or above a break-even point.
-- `reject`: current evidence supports keeping the baseline.
-- `inconclusive`: missing, invalid, or conflicting evidence could change the decision.
+### 5. Compare the arms
 
-State where the capability wins, where it loses, and the break-even condition. Do not force a universal verdict for a capability that serves only a subset of tasks.
+Evaluate these metrics:
 
-## Integrity rules
+| Metric | Requirement |
+|---|---|
+| Result quality | Required. Prefer an objective reference or explicit task requirements. If judgment is subjective, label it as AI-assessed and explain the basis. |
+| End-to-end elapsed time | Required. Measure the complete task, not only a fast internal tool call. |
+| Tokens | Optional. Compare only when both values are reported by the host. |
+| Cost | Optional. Compare only when both values are reported in compatible units. |
 
-- Never claim a tool call, live process, timing, cost, or result that was not observed.
-- Do not use assistant narration alone as evidence that a capability ran.
-- Do not infer quality from speed, novelty, or visual polish.
-- Do not cherry-pick successful runs or hide fallback use.
-- Distinguish observed fact, calculated metric, and interpretation.
-- End with one plain statement of what the test established and what it did not.
+Check result quality before efficiency. A faster failed result is not an improvement.
+
+Calculate differences and percentages only when units match, values are present, and the denominator is greater than zero.
+
+### 6. Write the recommendation
+
+Use exactly one verdict:
+
+- **Adopt** — the candidate meets the task requirements and clearly improves the primary value metric.
+- **Conditional adoption** — the candidate is valuable only in stated situations, repeated workflows, or above a clear break-even point.
+- **Do not adopt yet** — the baseline is more suitable for this representative task.
+- **Inconclusive** — invocation, result quality, or a decision-critical metric lacks sufficient evidence.
+
+Explain:
+
+- the candidate's concrete benefit;
+- its tradeoff or lost capability;
+- when to use it;
+- when to keep the baseline;
+- what this one experiment did not establish.
+
+### 7. Build the report data
+
+Create an output directory inside the current task workspace. Write the observed experiment data to `experiment.json`, following the structure in `tests/sample-experiment.json` next to this Skill.
+
+Do not include secrets, cookies, authorization headers, private tokens, or unrelated user data. Redact sensitive values before writing evidence.
+
+Use `null` for unavailable token and cost values. Keep raw evidence concise; include only the portion needed to verify execution.
+
+### 8. Render the standalone HTML
+
+Run:
+
+```bash
+python3 <skill-directory>/scripts/render_report.py <output-directory>/experiment.json --output <output-directory>/report.html
+```
+
+The renderer uses only the Python standard library and creates a self-contained HTML file without external CDNs, fonts, or scripts.
+
+The HTML must present, in this order:
+
+1. experiment title, shared task, verdict, and one-line conclusion;
+2. core metric cards for quality, time, tokens, and cost;
+3. side-by-side baseline and candidate process timelines;
+4. result summaries and value differences;
+5. benefits, tradeoffs, use cases, limitations, and adoption recommendation;
+6. **as the final section: Execution logs and invocation evidence**.
+
+The final evidence section must contain separate baseline and candidate columns with:
+
+- invocation status: “Verified” or “Unverified”;
+- actual capability name and available version/configuration;
+- chronological execution steps;
+- commands, code, tool-call information, logs, task metadata, and raw output excerpts that were actually observed;
+- errors and retries when they occurred;
+- optional screenshots or evidence files.
+
+Long logs must be collapsed by default and expandable by the user. Never write assistant-authored prose in a way that imitates a system log.
+
+### 9. Verify the artifact
+
+Open or render `report.html` and check:
+
+- it loads without network access;
+- the baseline and candidate are not swapped;
+- units are consistent;
+- missing metrics display “Not available,” not zero;
+- the verdict matches the observed data and written analysis;
+- the invocation evidence is visible in the final section;
+- no secrets or private identifiers appear in the page.
+
+Fix any defect before delivery.
+
+### 10. Deliver
+
+The final response should contain only what the user needs to act:
+
+1. a clickable link to `report.html`;
+2. the one-sentence adoption recommendation;
+3. the most important limitation of the experiment.
+
+## Incomplete experiments
+
+Never fabricate a complete experiment when:
+
+- one arm cannot run;
+- the methods cannot complete the same task;
+- no evidence proves that the candidate ran;
+- a critical result cannot be read;
+- execution requires authorization the user has not provided.
+
+Preserve the completed evidence, generate a report when useful, label the experiment incomplete, and use the verdict **Inconclusive**.
+
+## Completion criteria
+
+The task is complete only when:
+
+- the user approved the exact experiment design that was executed;
+- both arms ran, or the report records why an arm could not run;
+- invocation evidence is present or explicitly marked missing;
+- result quality and elapsed time are compared;
+- the HTML is generated and visually verified;
+- its final section contains the execution logs and invocation evidence;
+- the report includes analysis, a verdict, and the experiment's main limitation.

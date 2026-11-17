@@ -1,0 +1,28 @@
+name: Validate Skill
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile renderer
+        run: python3 -m py_compile scripts/render_report.py
+      - name: Render valid sample
+        run: python3 scripts/render_report.py tests/sample-experiment.json --output /tmp/capability-value-report.html
+      - name: Check standalone report contents
+        run: |
+          grep -q "Sample capability value test" /tmp/capability-value-report.html
+          grep -q "Execution logs and invocation evidence" /tmp/capability-value-report.html
+      - name: Reject invalid sample
+        run: |
+          if python3 scripts/render_report.py tests/invalid-experiment.json --output /tmp/invalid.html; then
+            echo "Invalid fixture was accepted"
+            exit 1
+          fi

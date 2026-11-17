@@ -1,0 +1,59 @@
+{
+  "title": "Sample capability value test",
+  "tested_at": "2026-11-17",
+  "task": "Extract the title, publication date, and three key points from the same public article.",
+  "primary_question": "Can the candidate reduce end-to-end time without reducing result quality?",
+  "verdict": {
+    "status": "conditional",
+    "label": "Conditional adoption",
+    "summary": "The candidate completed the sample task with equivalent quality and lower elapsed time, but this single demonstration run is not a general benchmark.",
+    "limitation": "One demonstration run per arm; the numbers below are fixture data, not a claim about a real product."
+  },
+  "baseline": {
+    "name": "Current method",
+    "version": "sample configuration",
+    "verified": true,
+    "elapsed_seconds": 14.2,
+    "tokens": null,
+    "cost": null,
+    "cost_currency": "USD",
+    "quality": {"status": "met", "label": "Requirements met", "summary": "Returned all required fields and three supported key points."},
+    "steps": [
+      {"time": "00:00", "title": "Started baseline", "detail": "Submitted the shared URL and extraction requirements."},
+      {"time": "00:06", "title": "Loaded article", "detail": "Retrieved and parsed the public page."},
+      {"time": "00:14", "title": "Completed output", "detail": "Returned the requested structured summary."}
+    ],
+    "result_summary": "Complete structured extraction with the requested title, date, and three key points.",
+    "evidence": [
+      {"type": "command", "label": "Invocation record", "content": "sample-baseline --task article-extraction"},
+      {"type": "log", "label": "Completion log", "content": "[demo] baseline finished; status=success; elapsed=14.2s"}
+    ]
+  },
+  "candidate": {
+    "name": "Candidate capability",
+    "version": "sample configuration",
+    "verified": true,
+    "elapsed_seconds": 8.1,
+    "tokens": null,
+    "cost": null,
+    "cost_currency": "USD",
+    "quality": {"status": "met", "label": "Requirements met", "summary": "Returned all required fields and three supported key points."},
+    "steps": [
+      {"time": "00:00", "title": "Started candidate", "detail": "Submitted the same URL and extraction requirements."},
+      {"time": "00:03", "title": "Loaded article", "detail": "Retrieved and parsed the public page through the candidate."},
+      {"time": "00:08", "title": "Completed output", "detail": "Returned the requested structured summary."}
+    ],
+    "result_summary": "Complete structured extraction with the requested title, date, and three key points.",
+    "evidence": [
+      {"type": "tool_call", "label": "Candidate invocation", "content": "candidate.extract({\"task\":\"article-extraction\"})"},
+      {"type": "log", "label": "Completion log", "content": "[demo] candidate finished; status=success; elapsed=8.1s"}
+    ]
+  },
+  "analysis": {
+    "benefits": ["Equivalent sample output in less end-to-end time.", "Invocation is represented by separate candidate evidence."],
+    "tradeoffs": ["This fixture does not measure cold-start setup time.", "Token and cost data were not available."],
+    "use_when": ["The task matches the tested public-page extraction workflow.", "The same operation is repeated often enough for the time difference to matter."],
+    "avoid_when": ["A visible or authenticated browser session is required.", "The candidate cannot provide verifiable invocation evidence."],
+    "recommendation": "Run the same approved design with real tools and real evidence before making an adoption decision."
+  }
+}

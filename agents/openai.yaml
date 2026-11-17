@@ -1,4 +1,4 @@
 interface:
-  display_name: "能力价值验收"
-  short_description: "通过可审计对照实验、过程证据和结果指标，验证新接入能力的真实价值"
-  default_prompt: "使用 $capability-value-test 为这个新接入能力设计并执行一套可感知、可复核的价值验收。"
+  display_name: "capability-value-test（Value Test）"
+  short_description: "Visualize and compare a new AI capability's value"
+  default_prompt: "Use $capability-value-test to design a lightweight A/B experiment, wait for my approval, execute both methods, and deliver a visual HTML report."

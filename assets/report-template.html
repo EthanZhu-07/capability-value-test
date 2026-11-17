@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Capability Value Test</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #eef2f7;
+      --ink: #152033;
+      --muted: #5c687a;
+      --line: #dce2ea;
+      --baseline: #2563eb;
+      --candidate: #059669;
+      --warning: #b45309;
+      --danger: #b91c1c;
+      --shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+    }
+
+    .page { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 72px; }
+    .hero, .section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero { padding: 34px; overflow: hidden; position: relative; }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      right: -100px;
+      top: -150px;
+      background: radial-gradient(circle, rgba(5,150,105,.22), rgba(37,99,235,.04) 70%);
+    }
+    .eyebrow { color: var(--muted); font-size: 13px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 850px; margin: 10px 0 12px; font-size: clamp(30px, 5vw, 52px); line-height: 1.08; }
+    h2 { margin-bottom: 8px; font-size: 25px; }
+    h3 { margin-bottom: 6px; font-size: 18px; }
+    .lede { max-width: 850px; color: var(--muted); font-size: 17px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 20px; color: var(--muted); font-size: 14px; }
+    .verdict {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 22px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      background: #dcfce7;
+      color: #166534;
+    }
+    .verdict[data-status="conditional"] { background: #fef3c7; color: #92400e; }
+    .verdict[data-status="do_not_adopt"] { background: #fee2e2; color: #991b1b; }
+    .verdict[data-status="inconclusive"] { background: #e2e8f0; color: #334155; }
+
+    .section { margin-top: 22px; padding: 26px; }
+    .section-head { margin-bottom: 20px; }
+    .section-head p { margin: 0; color: var(--muted); }
+    .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .metric { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: linear-gradient(180deg, #fff, #f8fafc); }
+    .metric-label { color: var(--muted); font-size: 13px; font-weight: 800; }
+    .metric-values { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .metric-value { min-width: 0; }
+    .metric-value span { display: block; overflow-wrap: anywhere; }
+    .metric-value .method { color: var(--muted); font-size: 12px; }
+    .metric-value .number { margin-top: 2px; font-size: 18px; font-weight: 850; }
+    .delta { margin-top: 12px; color: var(--muted); font-size: 12px; }
+    .delta.good { color: #047857; font-weight: 800; }
+    .delta.bad { color: var(--danger); font-weight: 800; }
+
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .arm { border: 1px solid var(--line); border-radius: 16px; padding: 20px; min-width: 0; }
+    .arm.baseline { border-top: 5px solid var(--baseline); }
+    .arm.candidate { border-top: 5px solid var(--candidate); }
+    .arm-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .arm-sub { color: var(--muted); font-size: 13px; }
+    .badge { padding: 5px 9px; border-radius: 999px; font-size: 11px; font-weight: 850; white-space: nowrap; }
+    .badge.verified { background: #dcfce7; color: #166534; }
+    .badge.unverified { background: #fee2e2; color: #991b1b; }
+    .timeline { position: relative; margin: 20px 0 0 8px; padding-left: 22px; border-left: 2px solid var(--line); }
+    .step { position: relative; padding: 0 0 18px; }
+    .step:last-child { padding-bottom: 0; }
+    .step::before { content: ""; position: absolute; left: -29px; top: 6px; width: 12px; height: 12px; border: 3px solid var(--surface); border-radius: 50%; background: var(--baseline); box-shadow: 0 0 0 1px var(--line); }
+    .candidate .step::before { background: var(--candidate); }
+    .step-time { color: var(--muted); font-size: 12px; }
+    .step-title { font-weight: 800; }
+    .step-detail { color: var(--muted); font-size: 14px; }
+    .result-box { margin-top: 20px; padding: 16px; border-radius: 12px; background: var(--surface-2); }
+
+    .bars { margin-top: 18px; display: grid; gap: 13px; }
+    .bar-row { display: grid; grid-template-columns: minmax(110px, 180px) 1fr 90px; gap: 12px; align-items: center; }
+    .bar-track { height: 14px; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
+    .bar-fill { height: 100%; min-width: 3px; border-radius: inherit; background: var(--baseline); }
+    .bar-fill.candidate { background: var(--candidate); }
+    .bar-number { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .analysis-card { padding: 18px; border: 1px solid var(--line); border-radius: 14px; }
+    .analysis-card ul { margin: 8px 0 0; padding-left: 20px; }
+    .recommendation { margin-top: 18px; padding: 18px; border-radius: 14px; background: #ecfdf5; border: 1px solid #a7f3d0; }
+    .limitation { margin-top: 14px; padding: 16px; border-radius: 12px; background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
+
+    .audit { background: #101827; color: #e5edf8; border-color: #263246; }
+    .audit .section-head p, .audit .arm-sub { color: #9fb0c8; }
+    .audit .arm { background: #162033; border-color: #31405a; }
+    .audit details { margin-top: 12px; border: 1px solid #31405a; border-radius: 10px; background: #0f172a; }
+    .audit summary { padding: 12px 14px; cursor: pointer; font-weight: 750; }
+    .evidence-body { padding: 0 14px 14px; }
+    .evidence-body pre { margin: 8px 0 0; padding: 13px; overflow: auto; border-radius: 8px; color: #dbeafe; background: #080f1d; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .evidence-body img { display: block; max-width: 100%; margin-top: 12px; border-radius: 8px; border: 1px solid #31405a; }
+    .attachment-error { color: #fbbf24; font-size: 13px; }
+    footer { padding: 24px 4px 0; color: var(--muted); font-size: 12px; text-align: center; }
+
+    @media (max-width: 900px) {
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+      .compare, .analysis-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .page { width: min(100% - 18px, 1180px); padding-top: 10px; }
+      .hero, .section { padding: 19px; border-radius: 14px; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .bar-row { grid-template-columns: 1fr; gap: 4px; }
+      .bar-number { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">Capability Value Test · 新能力价值实验</div>
+      <h1 id="title"></h1>
+      <p class="lede" id="verdict-summary"></p>
+      <div class="verdict" id="verdict"></div>
+      <div class="meta">
+        <span><strong>Task / 任务：</strong><span id="task"></span></span>
+        <span><strong>Question / 价值问题：</strong><span id="question"></span></span>
+        <span><strong>Tested / 测试时间：</strong><span id="tested-at"></span></span>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Core comparison / 核心对比</h2>
+        <p>Missing measurements remain visible as “Not available”; they are never treated as zero.</p>
+      </div>
+      <div class="metric-grid" id="metrics"></div>
+      <div class="bars" id="time-bars"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Process comparison / 过程对照</h2>
+        <p>Recorded execution steps. A headless timeline is an execution record, not a live video.</p>
+      </div>
+      <div class="compare">
+        <article class="arm baseline" id="baseline-process"></article>
+        <article class="arm candidate" id="candidate-process"></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Analysis and recommendation / 分析与建议</h2>
+        <p>The recommendation is directional and limited to this representative task.</p>
+      </div>
+      <div class="analysis-grid">
+        <div class="analysis-card"><h3>Benefits / 主要收益</h3><ul id="benefits"></ul></div>
+        <div class="analysis-card"><h3>Tradeoffs / 主要代价</h3><ul id="tradeoffs"></ul></div>
+        <div class="analysis-card"><h3>Use when / 适合使用</h3><ul id="use-when"></ul></div>
+        <div class="analysis-card"><h3>Keep the baseline when / 继续使用原方法</h3><ul id="avoid-when"></ul></div>
+      </div>
+      <div class="recommendation"><strong>Recommendation / 采用建议</strong><p id="recommendation"></p></div>
+      <div class="limitation"><strong>Main limitation / 主要限制</strong><div id="limitation"></div></div>
+    </section>
+
+    <section class="section audit">
+      <div class="section-head">
+        <h2>Execution logs and invocation evidence / 执行日志与调用证据</h2>
+        <p>This final section contains the observable evidence used to verify each method actually ran.</p>
+      </div>
+      <div class="compare">
+        <article class="arm baseline" id="baseline-evidence"></article>
+        <article class="arm candidate" id="candidate-evidence"></article>
+      </div>
+    </section>
+
+    <footer>Generated locally by capability-value-test. No external scripts or fonts are loaded.</footer>
+  </main>
+
+  <script type="application/json" id="experiment-data">__EXPERIMENT_JSON__</script>
+  <script>
+    const data = JSON.parse(document.getElementById("experiment-data").textContent);
+    const $ = (id) => document.getElementById(id);
+    const missing = "Not available / 未获取";
+
+    function node(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== undefined && text !== null) element.textContent = String(text);
+      return element;
+    }
+
+    function formatNumber(value, digits = 1) {
+      return Number(value).toLocaleString(undefined, { maximumFractionDigits: digits });
+    }
+
+    function formatSeconds(value) {
+      return `${formatNumber(value, 2)} s`;
+    }
+
+    function formatCost(arm) {
+      if (arm.cost === null || arm.cost === undefined) return missing;
+      return `${arm.cost_currency || ""} ${formatNumber(arm.cost, 4)}`.trim();
+    }
+
+    function percentText(value, noun) {
+      if (value === null || value === undefined) return missing;
+      if (Math.abs(value) < 0.05) return `${noun}: no material change / 基本无变化`;
+      return value > 0
+        ? `${noun}: ${formatNumber(value)}% lower / 降低`
+        : `${noun}: ${formatNumber(Math.abs(value))}% higher / 增加`;
+    }
+
+    function addMetric(label, baselineValue, candidateValue, deltaText, deltaClass = "") {
+      const card = node("div", "metric");
+      card.append(node("div", "metric-label", label));
+      const values = node("div", "metric-values");
+      [[data.baseline.name, baselineValue], [data.candidate.name, candidateValue]].forEach(([method, value]) => {
+        const box = node("div", "metric-value");
+        box.append(node("span", "method", method), node("span", "number", value));
+        values.append(box);
+      });
+      card.append(values, node("div", `delta ${deltaClass}`.trim(), deltaText));
+      $("metrics").append(card);
+    }
+
+    function renderMetrics() {
+      addMetric(
+        "Result quality / 结果质量",
+        data.baseline.quality.label,
+        data.candidate.quality.label,
+        `${data.candidate.quality.summary}`
+      );
+      const timePct = data.computed.time_improvement_percent;
+      addMetric(
+        "End-to-end time / 总耗时",
+        formatSeconds(data.baseline.elapsed_seconds),
+        formatSeconds(data.candidate.elapsed_seconds),
+        percentText(timePct, "Candidate time / 候选耗时"),
+        timePct > 0 ? "good" : timePct < 0 ? "bad" : ""
+      );
+      const tokenPct = data.computed.token_improvement_percent;
+      addMetric(
+        "Tokens / Token 用量",
+        data.baseline.tokens ?? missing,
+        data.candidate.tokens ?? missing,
+        percentText(tokenPct, "Candidate tokens / 候选 Token"),
+        tokenPct > 0 ? "good" : tokenPct < 0 ? "bad" : ""
+      );
+      const costPct = data.computed.cost_improvement_percent;
+      addMetric(
+        "Cost / 费用",
+        formatCost(data.baseline),
+        formatCost(data.candidate),
+        percentText(costPct, "Candidate cost / 候选费用"),
+        costPct > 0 ? "good" : costPct < 0 ? "bad" : ""
+      );
+
+      const maxTime = Math.max(data.baseline.elapsed_seconds, data.candidate.elapsed_seconds, 0.001);
+      [[data.baseline, "baseline"], [data.candidate, "candidate"]].forEach(([arm, kind]) => {
+        const row = node("div", "bar-row");
+        row.append(node("div", "", arm.name));
+        const track = node("div", "bar-track");
+        const fill = node("div", `bar-fill ${kind === "candidate" ? "candidate" : ""}`.trim());
+        fill.style.width = `${Math.max(2, arm.elapsed_seconds / maxTime * 100)}%`;
+        track.append(fill);
+        row.append(track, node("div", "bar-number", formatSeconds(arm.elapsed_seconds)));
+        $("time-bars").append(row);
+      });
+    }
+
+    function armHeading(arm, title) {
+      const head = node("div", "arm-head");
+      const text = node("div");
+      text.append(node("h3", "", title), node("div", "arm-sub", `${arm.name}${arm.version ? ` · ${arm.version}` : ""}`));
+      head.append(text, node("span", `badge ${arm.verified ? "verified" : "unverified"}`, arm.verified ? "Verified / 已验证" : "Unverified / 无法验证"));
+      return head;
+    }
+
+    function renderProcess(arm, targetId, title) {
+      const target = $(targetId);
+      target.append(armHeading(arm, title));
+      const timeline = node("div", "timeline");
+      arm.steps.forEach((item) => {
+        const step = node("div", "step");
+        if (item.time) step.append(node("div", "step-time", item.time));
+        step.append(node("div", "step-title", item.title), node("div", "step-detail", item.detail));
+        timeline.append(step);
+      });
+      const result = node("div", "result-box");
+      result.append(node("strong", "", "Result / 结果"), node("div", "", arm.result_summary));
+      target.append(timeline, result);
+    }
+
+    function renderList(targetId, items) {
+      const target = $(targetId);
+      (items || []).forEach((item) => target.append(node("li", "", item)));
+      if (!items || items.length === 0) target.append(node("li", "", missing));
+    }
+
+    function renderEvidence(arm, targetId, title) {
+      const target = $(targetId);
+      target.append(armHeading(arm, title));
+      arm.evidence.forEach((item) => {
+        const details = node("details");
+        details.append(node("summary", "", `${item.label} · ${item.type}`));
+        const body = node("div", "evidence-body");
+        if (item.content) body.append(node("pre", "", item.content));
+        if (item.data_url) {
+          const image = node("img");
+          image.src = item.data_url;
+          image.alt = item.label;
+          body.append(image);
+        } else if (item.path) {
+          body.append(node("div", "arm-sub", `Evidence file / 证据文件：${item.path}`));
+        }
+        if (item.attachment_error) body.append(node("div", "attachment-error", item.attachment_error));
+        details.append(body);
+        target.append(details);
+      });
+    }
+
+    document.title = data.title;
+    $("title").textContent = data.title;
+    $("verdict-summary").textContent = data.verdict.summary;
+    $("verdict").textContent = data.verdict.label;
+    $("verdict").dataset.status = data.verdict.status;
+    $("task").textContent = data.task;
+    $("question").textContent = data.primary_question;
+    $("tested-at").textContent = data.tested_at;
+    $("recommendation").textContent = data.analysis.recommendation;
+    $("limitation").textContent = data.verdict.limitation;
+
+    renderMetrics();
+    renderProcess(data.baseline, "baseline-process", "Baseline / 原方法");
+    renderProcess(data.candidate, "candidate-process", "Candidate / 新能力");
+    renderList("benefits", data.analysis.benefits);
+    renderList("tradeoffs", data.analysis.tradeoffs);
+    renderList("use-when", data.analysis.use_when);
+    renderList("avoid-when", data.analysis.avoid_when);
+    renderEvidence(data.baseline, "baseline-evidence", "Baseline evidence / 原方法证据");
+    renderEvidence(data.candidate, "candidate-evidence", "Candidate evidence / 新能力证据");
+  </script>
+</body>
+</html>

@@ -1,46 +1,136 @@
 # Capability Value Test
 
-A Codex skill for making the value of a newly added tool, integration, model, skill, or workflow perceptible and auditable.
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-新接入一个 AI 能力后，单凭“成功得到结果”通常无法判断它是否真的有价值。这个 Skill 会围绕三个问题设计验收：
+Make the value of a newly added AI capability visible, comparable, and auditable.
 
-1. **缺少反事实基线：** 如果继续使用原来的方法，结果会怎样？
-2. **过程不可见：** 人类能实时看到什么，或者事后核验什么？
-3. **调用来源不可信：** 有什么证据证明候选能力真的被调用了？
+Capability Value Test is a lightweight Codex Skill for evaluating a new Skill, model, plugin, MCP server, browser, open-source tool, or workflow against the method you already use. It designs a fair A/B experiment, waits for human approval, executes both arms, and delivers a standalone HTML report with the process, evidence, metrics, analysis, and adoption recommendation.
+
+## Why this exists
+
+AI systems increasingly use tools that operate out of sight. After adding one, a human often cannot answer three basic questions:
+
+1. **Was the new capability actually used?** An assistant saying “I used it” is not proof.
+2. **Did it create value?** A successful result does not reveal how the old method would have performed.
+3. **Where is the evidence?** Hidden execution makes time savings, token reduction, and quality improvements hard to inspect.
+
+This Skill turns those questions into a small, reviewable experiment. The goal is not to make the new capability win; a negative or inconclusive result is useful evidence too.
 
 ## What it does
 
-- Selects a realistic baseline instead of a weak strawman.
-- Chooses A/B, ablation, before/after, shadow/canary, or threshold testing according to the decision.
-- Separates first-time exploration, cold start, optimized replay, and scaled batch performance.
-- Collects provenance, process, outcome, efficiency, reliability, and reproducibility evidence.
-- Grades provenance from unsupported assistant assertion (`P0`) to independently reproducible proof (`P3`).
-- Grades observability from final-result-only (`O0`) to a genuinely live visible process (`O3`).
-- Returns an `adopt`, `conditional`, `reject`, or `inconclusive` verdict.
-- States where the new capability wins, loses, and reaches its break-even point.
+- Compares the candidate capability with the user's real current method on the same task.
+- Shows the complete experiment design and waits for explicit human approval before running anything.
+- Revises the design and asks again when the human rejects or changes it.
+- Captures real invocation evidence, commands, tool calls, logs, timestamps, errors, and retries when available.
+- Compares required metrics: result quality and end-to-end elapsed time.
+- Compares tokens and cost only when the host actually reports them.
+- Generates a self-contained HTML report that works offline.
+- Ends with a separate audit section for baseline and candidate execution evidence.
+- Produces one of four verdicts: **Adopt**, **Conditional adoption**, **Do not adopt yet**, or **Inconclusive**.
 
-The goal is not to make the new capability win. A negative or inconclusive result is valid evidence.
+## Human approval is a hard gate
+
+```text
+New capability + current method
+             ↓
+      Experiment design
+             ↓
+      Human review/approval ── rejected → revise and review again
+             ↓ approved
+    Baseline run + candidate run
+             ↓
+  Visual HTML report + recommendation
+```
+
+Approval applies only to the exact design shown. It does not replace permissions required for consequential actions such as login, payment, submission, communication, or deletion.
+
+## What the report contains
+
+1. Verdict and one-line conclusion.
+2. Quality, elapsed time, token, and cost cards.
+3. Side-by-side execution timelines.
+4. Result and value comparison.
+5. Benefits, tradeoffs, suitable cases, unsuitable cases, and adoption recommendation.
+6. **Final section: execution logs and invocation evidence**, separated by baseline and candidate.
+
+Unavailable metrics are shown as “Not available,” never as zero. Headless execution is presented as a recorded timeline, never misrepresented as a live screen recording.
 
 ## Install
+
+With the Skills CLI:
+
+```bash
+npx -y skills add ETHAN-7TB/capability-value-test -g --all
+```
+
+Or clone it manually:
 
 ```bash
 git clone https://github.com/ETHAN-7TB/capability-value-test.git ~/.codex/skills/capability-value-test
 ```
 
-Restart Codex after installation if the skill does not appear immediately.
+Restart your agent host if the Skill does not appear immediately.
 
 ## Use
 
 Invoke it explicitly:
 
 ```text
-Use $capability-value-test to design and run a perceptible, auditable value test for this new capability.
+Use $capability-value-test to compare Lightpanda with my current browser workflow.
 ```
 
-It may also be selected automatically when the user asks whether a newly added capability is worth adopting, requests a fair comparison with the current method, or needs proof that the capability was actually used.
+Or ask naturally:
 
-## Files
+```text
+I added a new model. Design an A/B test so I can see whether it improves quality or saves time.
+```
 
-- `SKILL.md` — decision framework and testing workflow.
-- `agents/openai.yaml` — Codex interface metadata.
-- `references/test-card.md` — pre-registered test contract, evidence ledger, proof grades, and result template.
+The Skill first returns an experiment plan. Execution begins only after you approve that exact plan.
+
+## Render a report manually
+
+The renderer uses only the Python standard library:
+
+```bash
+python3 scripts/render_report.py tests/sample-experiment.json --output report.html
+```
+
+Open `report.html` in any modern browser. The sample is demonstration data, not a claim about a real product.
+
+## Evidence and privacy
+
+The report may include concise command output, tool-call metadata, logs, and screenshots when they are actually available. It must never invent evidence or include secrets, cookies, authorization headers, private tokens, or unrelated user data. Evidence file paths must stay inside the experiment directory; images up to 5 MB can be embedded into the standalone report.
+
+## Limits
+
+- One run per arm provides directional evidence, not a statistical guarantee.
+- A fair comparison requires both methods to complete the same representative task.
+- Tokens and cost may be unavailable depending on the host.
+- If candidate invocation cannot be verified, the verdict must be **Inconclusive**.
+- Browser-visible animation is not always possible for headless tools; their actual events and outputs are shown as an execution record instead.
+
+## Repository structure
+
+```text
+.
+├── SKILL.md                       # Agent instructions and workflow
+├── agents/openai.yaml             # Codex interface metadata
+├── assets/report-template.html    # Offline visual report template
+├── scripts/render_report.py       # JSON validator and HTML renderer
+├── tests/sample-experiment.json   # Valid demonstration fixture
+└── tests/invalid-experiment.json  # Validation failure fixture
+```
+
+## Development
+
+```bash
+python3 -m py_compile scripts/render_report.py
+python3 scripts/render_report.py tests/sample-experiment.json --output /tmp/capability-value-report.html
+python3 scripts/render_report.py tests/invalid-experiment.json --output /tmp/invalid.html
+```
+
+The last command should fail with exit code `2`. GitHub Actions runs the same core checks on every push and pull request.
+
+## License
+
+No license file is currently included. Public repository visibility does not itself grant permission to copy, modify, or redistribute the code.
