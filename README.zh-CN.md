@@ -60,13 +60,13 @@ AI 越来越多地调用人类看不见的工具。接入一个新能力后，�
 使用 Skills CLI：
 
 ```bash
-npx -y skills add ETHAN-7TB/capability-value-test -g --all
+npx -y skills add EthanZhu-07/capability-value-test -g --all
 ```
 
 或手动克隆：
 
 ```bash
-git clone https://github.com/ETHAN-7TB/capability-value-test.git ~/.codex/skills/capability-value-test
+git clone https://github.com/EthanZhu-07/capability-value-test.git ~/.codex/skills/capability-value-test
 ```
 
 如果没有立刻出现，可重启 Agent 宿主。

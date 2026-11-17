@@ -60,13 +60,13 @@ Unavailable metrics are shown as “Not available,” never as zero. Headless ex
 With the Skills CLI:
 
 ```bash
-npx -y skills add ETHAN-7TB/capability-value-test -g --all
+npx -y skills add EthanZhu-07/capability-value-test -g --all
 ```
 
 Or clone it manually:
 
 ```bash
-git clone https://github.com/ETHAN-7TB/capability-value-test.git ~/.codex/skills/capability-value-test
+git clone https://github.com/EthanZhu-07/capability-value-test.git ~/.codex/skills/capability-value-test
 ```
 
 Restart your agent host if the Skill does not appear immediately.
