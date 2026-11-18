@@ -4,8 +4,8 @@
   "task": "Extract the title, publication date, and three key points from the same public article.",
   "primary_question": "Can the candidate reduce end-to-end time without reducing result quality?",
   "verdict": {
-    "status": "conditional",
-    "label": "Conditional adoption",
+    "status": "inconclusive",
+    "label": "Inconclusive — more evidence is required",
     "summary": "The candidate completed the sample task with equivalent quality and lower elapsed time, but this single demonstration run is not a general benchmark.",
     "limitation": "One demonstration run per arm; the numbers below are fixture data, not a claim about a real product."
   },

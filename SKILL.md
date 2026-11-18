@@ -1,6 +1,6 @@
 ---
 name: capability-value-test
-description: Design and run a visual A/B test for a new AI capability. Use when a user wants proof that a Skill, model, plugin, MCP server, browser, or tool was invoked and wants to compare its quality, time, tokens, or cost with the current method. Requires plan approval and delivers an HTML report.
+description: Design and run a visual A/B test between an existing method and the method enabled by a newly integrated capability. Use when a user wants proof that a Skill, model, plugin, MCP server, browser, open-source component, or agent workflow was invoked and wants to quantify its value. Requires human approval before execution and delivers a traceable HTML report.
 ---
 
 # Capability Value Test
@@ -129,16 +129,14 @@ Calculate differences and percentages only when units match, values are present,
 Use exactly one verdict:
 
 - **Adopt** — the candidate meets the task requirements and clearly improves the primary value metric.
-- **Conditional adoption** — the candidate is valuable only in stated situations, repeated workflows, or above a clear break-even point.
-- **Do not adopt yet** — the baseline is more suitable for this representative task.
+- **Do not adopt** — the baseline is more suitable for this representative task.
 - **Inconclusive** — invocation, result quality, or a decision-critical metric lacks sufficient evidence.
 
 Explain:
 
 - the candidate's concrete benefit;
 - its tradeoff or lost capability;
-- when to use it;
-- when to keep the baseline;
+- its suitable and unsuitable scenarios;
 - what this one experiment did not establish.
 
 ### 7. Build the report data

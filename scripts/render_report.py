@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 
-VERDICTS = {"adopt", "conditional", "do_not_adopt", "inconclusive"}
+VERDICTS = {"adopt", "do_not_adopt", "inconclusive"}
 QUALITY_STATES = {"met", "partial", "failed"}
 
 
