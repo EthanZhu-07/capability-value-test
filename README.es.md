@@ -59,6 +59,8 @@ python3 scripts/render_report.py tests/sample-experiment.json --output report.ht
 
 El generador usa solo la biblioteca estándar de Python y crea un único HTML que funciona sin conexión.
 
+La versión más reciente usa un formato de informe fijo y versionado. Todos los informes mantienen las mismas secciones y el mismo orden, con una explicación bajo cada encabezado principal. El idioma predeterminado es el idioma de conversación del usuario y puede cambiarse desde la esquina superior derecha. El análisis separa los resultados del experimento, la investigación externa con fuentes y la recomendación final, y describe cada escenario mediante una persona, una tarea y un entorno concretos.
+
 ## Límites
 
 - Una ejecución por método aporta evidencia orientativa, no una garantía estadística.

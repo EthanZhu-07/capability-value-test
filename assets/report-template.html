@@ -30,7 +30,7 @@
         "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       line-height: 1.6;
     }
-
+    a { color: #1d4ed8; }
     .page { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 72px; }
     .hero, .section {
       background: var(--surface);
@@ -38,7 +38,7 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
-    .hero { padding: 34px; overflow: hidden; position: relative; }
+    .hero { padding: 34px; overflow: visible; position: relative; }
     .hero::after {
       content: "";
       position: absolute;
@@ -48,10 +48,58 @@
       right: -100px;
       top: -150px;
       background: radial-gradient(circle, rgba(5,150,105,.22), rgba(37,99,235,.04) 70%);
+      pointer-events: none;
     }
+    .language-picker { position: absolute; z-index: 3; top: 24px; right: 24px; }
+    .language-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 144px;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255,255,255,.96);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 750;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(15,23,42,.08);
+    }
+    .language-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 190px;
+      max-height: 280px;
+      overflow: auto;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .language-menu[hidden] { display: none; }
+    .language-option {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 9px 10px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      text-align: start;
+      cursor: pointer;
+    }
+    .language-option:hover, .language-option[aria-current="true"] { background: var(--surface-2); }
     .eyebrow { color: var(--muted); font-size: 13px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
     h1, h2, h3, p { margin-top: 0; }
-    h1 { max-width: 850px; margin: 10px 0 12px; font-size: clamp(30px, 5vw, 52px); line-height: 1.08; }
+    h1 { max-width: 850px; margin: 10px 0 12px; padding-right: 120px; font-size: clamp(30px, 5vw, 52px); line-height: 1.08; }
     h2 { margin-bottom: 8px; font-size: 25px; }
     h3 { margin-bottom: 6px; font-size: 18px; }
     .lede { max-width: 850px; color: var(--muted); font-size: 17px; }
@@ -69,7 +117,6 @@
     }
     .verdict[data-status="do_not_adopt"] { background: #fee2e2; color: #991b1b; }
     .verdict[data-status="inconclusive"] { background: #e2e8f0; color: #334155; }
-
     .section { margin-top: 22px; padding: 26px; }
     .section-head { margin-bottom: 20px; }
     .section-head p { margin: 0; color: var(--muted); }
@@ -84,7 +131,6 @@
     .delta { margin-top: 12px; color: var(--muted); font-size: 12px; }
     .delta.good { color: #047857; font-weight: 800; }
     .delta.bad { color: var(--danger); font-weight: 800; }
-
     .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .arm { border: 1px solid var(--line); border-radius: 16px; padding: 20px; min-width: 0; }
     .arm.baseline { border-top: 5px solid var(--baseline); }
@@ -103,20 +149,31 @@
     .step-title { font-weight: 800; }
     .step-detail { color: var(--muted); font-size: 14px; }
     .result-box { margin-top: 20px; padding: 16px; border-radius: 12px; background: var(--surface-2); }
-
     .bars { margin-top: 18px; display: grid; gap: 13px; }
     .bar-row { display: grid; grid-template-columns: minmax(110px, 180px) 1fr 90px; gap: 12px; align-items: center; }
     .bar-track { height: 14px; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
     .bar-fill { height: 100%; min-width: 3px; border-radius: inherit; background: var(--baseline); }
     .bar-fill.candidate { background: var(--candidate); }
     .bar-number { text-align: right; font-variant-numeric: tabular-nums; }
-
     .analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .analysis-card { padding: 18px; border: 1px solid var(--line); border-radius: 14px; }
     .analysis-card ul { margin: 8px 0 0; padding-left: 20px; }
+    .research-summary { margin-bottom: 14px; color: var(--muted); }
+    .source-list { display: grid; gap: 12px; }
+    .source-card { padding: 15px; border: 1px solid var(--line); border-radius: 12px; background: #f8fafc; }
+    .source-meta { color: var(--muted); font-size: 12px; }
+    .scenario-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .scenario-card { padding: 18px; border: 1px solid var(--line); border-radius: 14px; }
+    .scenario-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .scenario-badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+    .scenario-badge { padding: 4px 8px; border-radius: 999px; background: var(--surface-2); color: var(--muted); font-size: 11px; font-weight: 800; }
+    .scenario-badge.use { background: #dcfce7; color: #166534; }
+    .scenario-badge.avoid { background: #fee2e2; color: #991b1b; }
+    .scenario-badge.retest { background: #fef3c7; color: #92400e; }
+    .scenario-line { margin-top: 7px; color: var(--muted); font-size: 13px; }
+    .scenario-line strong { color: var(--ink); }
     .recommendation { margin-top: 18px; padding: 18px; border-radius: 14px; background: #ecfdf5; border: 1px solid #a7f3d0; }
     .limitation { margin-top: 14px; padding: 16px; border-radius: 12px; background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
-
     .audit { background: #101827; color: #e5edf8; border-color: #263246; }
     .audit .section-head p, .audit .arm-sub { color: #9fb0c8; }
     .audit .arm { background: #162033; border-color: #31405a; }
@@ -127,48 +184,50 @@
     .evidence-body img { display: block; max-width: 100%; margin-top: 12px; border-radius: 8px; border: 1px solid #31405a; }
     .attachment-error { color: #fbbf24; font-size: 13px; }
     footer { padding: 24px 4px 0; color: var(--muted); font-size: 12px; text-align: center; }
-
     @media (max-width: 900px) {
       .metric-grid { grid-template-columns: 1fr 1fr; }
-      .compare, .analysis-grid { grid-template-columns: 1fr; }
+      .compare, .analysis-grid, .scenario-grid { grid-template-columns: 1fr; }
     }
-    @media (max-width: 560px) {
+    @media (max-width: 620px) {
       .page { width: min(100% - 18px, 1180px); padding-top: 10px; }
       .hero, .section { padding: 19px; border-radius: 14px; }
+      .language-picker { position: relative; top: auto; right: auto; display: flex; justify-content: flex-end; margin-bottom: 18px; }
+      .language-menu { top: calc(100% + 8px); }
+      h1 { padding-right: 0; }
       .metric-grid { grid-template-columns: 1fr; }
       .bar-row { grid-template-columns: 1fr; gap: 4px; }
       .bar-number { text-align: left; }
     }
   </style>
 </head>
-<body>
+<body data-report-format-version="__REPORT_FORMAT_VERSION__">
   <main class="page">
     <section class="hero">
-      <div class="eyebrow">Capability Value Test · 新能力价值实验</div>
+      <div class="language-picker">
+        <button class="language-button" id="language-button" type="button" aria-haspopup="listbox" aria-expanded="false">
+          <span>🌐 <span id="current-language"></span></span><span>▾</span>
+        </button>
+        <div class="language-menu" id="language-menu" role="listbox" hidden></div>
+      </div>
+      <div class="eyebrow" id="eyebrow"></div>
       <h1 id="title"></h1>
       <p class="lede" id="verdict-summary"></p>
       <div class="verdict" id="verdict"></div>
       <div class="meta">
-        <span><strong>Task / 任务：</strong><span id="task"></span></span>
-        <span><strong>Question / 价值问题：</strong><span id="question"></span></span>
-        <span><strong>Tested / 测试时间：</strong><span id="tested-at"></span></span>
+        <span><strong id="task-label"></strong><span id="task"></span></span>
+        <span><strong id="question-label"></strong><span id="question"></span></span>
+        <span><strong id="tested-label"></strong><span id="tested-at"></span></span>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head">
-        <h2>Core comparison / 核心对比</h2>
-        <p>Missing measurements remain visible as “Not available”; they are never treated as zero.</p>
-      </div>
+      <div class="section-head"><h2 id="comparison-title"></h2><p id="comparison-note"></p></div>
       <div class="metric-grid" id="metrics"></div>
       <div class="bars" id="time-bars"></div>
     </section>
 
     <section class="section">
-      <div class="section-head">
-        <h2>Process comparison / 过程对照</h2>
-        <p>Recorded execution steps. A headless timeline is an execution record, not a live video.</p>
-      </div>
+      <div class="section-head"><h2 id="process-title"></h2><p id="process-note"></p></div>
       <div class="compare">
         <article class="arm baseline" id="baseline-process"></article>
         <article class="arm candidate" id="candidate-process"></article>
@@ -176,39 +235,109 @@
     </section>
 
     <section class="section">
-      <div class="section-head">
-        <h2>Analysis and recommendation / 分析与建议</h2>
-        <p>The recommendation is directional and limited to this representative task.</p>
-      </div>
+      <div class="section-head"><h2 id="experiment-findings-title"></h2><p id="experiment-findings-note"></p></div>
+      <div class="analysis-card"><ul id="experiment-findings"></ul></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2 id="research-title"></h2><p id="research-note"></p></div>
+      <p class="research-summary" id="research-summary"></p>
+      <div class="source-list" id="research-sources"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2 id="analysis-title"></h2><p id="analysis-note"></p></div>
       <div class="analysis-grid">
-        <div class="analysis-card"><h3>Benefits / 主要收益</h3><ul id="benefits"></ul></div>
-        <div class="analysis-card"><h3>Tradeoffs / 主要代价</h3><ul id="tradeoffs"></ul></div>
-        <div class="analysis-card"><h3>Use when / 适合使用</h3><ul id="use-when"></ul></div>
-        <div class="analysis-card"><h3>Keep the baseline when / 继续使用原方法</h3><ul id="avoid-when"></ul></div>
+        <div class="analysis-card"><h3 id="benefits-title"></h3><ul id="benefits"></ul></div>
+        <div class="analysis-card"><h3 id="tradeoffs-title"></h3><ul id="tradeoffs"></ul></div>
       </div>
-      <div class="recommendation"><strong>Recommendation / 采用建议</strong><p id="recommendation"></p></div>
-      <div class="limitation"><strong>Main limitation / 主要限制</strong><div id="limitation"></div></div>
+      <h3 id="scenarios-title" style="margin-top:22px"></h3>
+      <div class="scenario-grid" id="scenarios"></div>
+      <div class="recommendation"><strong id="recommendation-title"></strong><p id="recommendation"></p></div>
+      <div class="limitation"><strong id="limitation-title"></strong><div id="limitation"></div></div>
     </section>
 
     <section class="section audit">
-      <div class="section-head">
-        <h2>Execution logs and invocation evidence / 执行日志与调用证据</h2>
-        <p>This final section contains the observable evidence used to verify each method actually ran.</p>
-      </div>
+      <div class="section-head"><h2 id="audit-title"></h2><p id="audit-note"></p></div>
       <div class="compare">
         <article class="arm baseline" id="baseline-evidence"></article>
         <article class="arm candidate" id="candidate-evidence"></article>
       </div>
     </section>
 
-    <footer>Generated locally by capability-value-test. No external scripts or fonts are loaded.</footer>
+    <footer id="footer"></footer>
   </main>
 
   <script type="application/json" id="experiment-data">__EXPERIMENT_JSON__</script>
   <script>
-    const data = JSON.parse(document.getElementById("experiment-data").textContent);
+    const baseData = JSON.parse(document.getElementById("experiment-data").textContent);
     const $ = (id) => document.getElementById(id);
-    const missing = "Not available / 未获取";
+    const UI = {
+      "en": {
+        eyebrow: "Capability Value Test", task: "Task: ", question: "Value question: ", tested: "Tested: ",
+        comparison: "Core comparison", comparisonNote: "Missing measurements remain visible as “Not available”; they are never treated as zero.",
+        quality: "Result quality", time: "End-to-end time", tokens: "Tokens", cost: "Cost", missing: "Not available",
+        candidateTime: "Candidate time", candidateTokens: "Candidate tokens", candidateCost: "Candidate cost", noChange: "no material change", lower: "lower", higher: "higher",
+        process: "Process comparison", processNote: "Recorded execution steps. A headless timeline is an execution record, not a live video.",
+        baseline: "Baseline", candidate: "Candidate", verified: "Verified", unverified: "Unverified", result: "Result",
+        experimentFindings: "What the experiment established", experimentFindingsNote: "Only observations produced by the approved A/B test are listed here.",
+        research: "External research", researchNote: "Public sources add context that the experiment alone could not establish.", noSources: "No reliable external sources were available.",
+        sourceFinding: "Supported finding", retrieved: "Retrieved", analysis: "Analysis and recommendation", analysisNote: "The synthesis combines experiment evidence and cited research without hiding conflicts.",
+        benefits: "Benefits", tradeoffs: "Tradeoffs", scenarios: "Concrete usage scenarios", recommendation: "Recommendation", limitation: "Main limitation",
+        audience: "Who", scenarioTask: "Task", environment: "Environment", reason: "Why", basis: "Evidence basis", confidence: "Confidence", sources: "Sources",
+        use: "Use", avoid: "Avoid", retest: "Retest", experiment: "Experiment", researchBasis: "Research", combined: "Combined", high: "High", medium: "Medium", low: "Low",
+        audit: "Execution logs and invocation evidence", auditNote: "This final section preserves the observable evidence used to verify that each method actually ran.",
+        baselineEvidence: "Baseline evidence", candidateEvidence: "Candidate evidence", evidenceFile: "Evidence file", footer: "Generated locally by capability-value-test. No external scripts or fonts are loaded."
+      },
+      "zh-CN": {
+        eyebrow: "新能力价值验证", task: "任务：", question: "价值问题：", tested: "测试时间：",
+        comparison: "核心对比", comparisonNote: "缺失指标会明确显示为“不可用”，不会被当作零。",
+        quality: "结果质量", time: "任务完成耗时", tokens: "Token 用量", cost: "费用", missing: "不可用",
+        candidateTime: "新方法耗时", candidateTokens: "新方法 Token", candidateCost: "新方法费用", noChange: "基本无变化", lower: "降低", higher: "增加",
+        process: "过程对照", processNote: "这里展示真实执行记录；无头时间线不是实时录屏。",
+        baseline: "原方法", candidate: "新能力方法", verified: "已验证", unverified: "无法验证", result: "结果",
+        experimentFindings: "本次实验直接证明了什么", experimentFindingsNote: "这里只呈现经批准的 A/B 实验实际观察到的内容。",
+        research: "外部资料与来源", researchNote: "公开资料用于补充单次实验无法回答的背景问题。", noSources: "没有获得可靠的外部资料。",
+        sourceFinding: "该来源支持的结论", retrieved: "检索日期", analysis: "综合分析与建议", analysisNote: "综合判断同时使用实验结果和有来源的外部资料，并明确保留两者的差异。",
+        benefits: "主要优势", tradeoffs: "主要劣势与代价", scenarios: "具体使用场景", recommendation: "采用建议", limitation: "主要限制",
+        audience: "谁在使用", scenarioTask: "具体任务", environment: "使用环境", reason: "判断原因", basis: "判断依据", confidence: "可信程度", sources: "资料来源",
+        use: "适合使用", avoid: "不适合使用", retest: "需要补充测试", experiment: "实验", researchBasis: "外部资料", combined: "实验与资料", high: "高", medium: "中", low: "低",
+        audit: "执行日志与调用证据", auditNote: "最后一部分保留用于验证两种方法真实执行过的原始证据。",
+        baselineEvidence: "原方法证据", candidateEvidence: "新能力证据", evidenceFile: "证据文件", footer: "由 capability-value-test 在本地生成；未加载外部脚本或字体。"
+      },
+      "ja": {
+        eyebrow: "新しい能力の価値検証", task: "タスク：", question: "価値の問い：", tested: "実施日：",
+        comparison: "主要比較", comparisonNote: "取得できない指標はゼロではなく「利用不可」と表示します。",
+        quality: "結果品質", time: "完了時間", tokens: "Token 使用量", cost: "コスト", missing: "利用不可",
+        candidateTime: "新方式の時間", candidateTokens: "新方式の Token", candidateCost: "新方式のコスト", noChange: "実質的な変化なし", lower: "減少", higher: "増加",
+        process: "プロセス比較", processNote: "実行記録です。ヘッドレスのタイムラインはライブ映像ではありません。",
+        baseline: "従来方式", candidate: "新しい能力", verified: "検証済み", unverified: "未検証", result: "結果",
+        experimentFindings: "実験で直接確認できたこと", experimentFindingsNote: "承認済み A/B テストで観測した内容だけを示します。",
+        research: "外部調査と出典", researchNote: "実験だけでは判断できない背景を公開情報で補います。", noSources: "信頼できる外部情報を取得できませんでした。",
+        sourceFinding: "この出典が支える内容", retrieved: "取得日", analysis: "総合分析と提案", analysisNote: "実験結果と出典付き調査を分けて示した上で統合します。",
+        benefits: "主な利点", tradeoffs: "主な欠点と代償", scenarios: "具体的な利用場面", recommendation: "採用提案", limitation: "主な制約",
+        audience: "利用者", scenarioTask: "タスク", environment: "環境", reason: "理由", basis: "根拠", confidence: "確度", sources: "出典",
+        use: "利用する", avoid: "利用しない", retest: "再テスト", experiment: "実験", researchBasis: "外部調査", combined: "実験と調査", high: "高", medium: "中", low: "低",
+        audit: "実行ログと呼び出し証拠", auditNote: "最後のセクションには両方式が実行されたことを示す原始証拠を保持します。",
+        baselineEvidence: "従来方式の証拠", candidateEvidence: "新能力の証拠", evidenceFile: "証拠ファイル", footer: "capability-value-test がローカル生成しました。外部スクリプトやフォントは使用していません。"
+      },
+      "ko": {
+        eyebrow: "새 기능 가치 검증", task: "작업: ", question: "가치 질문: ", tested: "테스트 날짜: ",
+        comparison: "핵심 비교", comparisonNote: "누락된 지표는 0이 아니라 '사용 불가'로 표시합니다.",
+        quality: "결과 품질", time: "완료 시간", tokens: "Token 사용량", cost: "비용", missing: "사용 불가",
+        candidateTime: "새 방식 시간", candidateTokens: "새 방식 Token", candidateCost: "새 방식 비용", noChange: "유의미한 변화 없음", lower: "감소", higher: "증가",
+        process: "과정 비교", processNote: "실제 실행 기록입니다. 헤드리스 타임라인은 실시간 영상이 아닙니다.",
+        baseline: "기존 방식", candidate: "새 기능 방식", verified: "검증됨", unverified: "검증 안 됨", result: "결과",
+        experimentFindings: "실험이 직접 확인한 내용", experimentFindingsNote: "승인된 A/B 테스트에서 실제로 관찰한 내용만 표시합니다.",
+        research: "외부 조사와 출처", researchNote: "실험만으로 확인할 수 없는 배경을 공개 자료로 보완합니다.", noSources: "신뢰할 수 있는 외부 자료를 확보하지 못했습니다.",
+        sourceFinding: "이 출처가 뒷받침하는 내용", retrieved: "검색일", analysis: "종합 분석과 제안", analysisNote: "실험 결과와 출처가 있는 외부 자료를 구분한 뒤 함께 판단합니다.",
+        benefits: "주요 장점", tradeoffs: "주요 단점과 비용", scenarios: "구체적인 사용 상황", recommendation: "도입 제안", limitation: "주요 한계",
+        audience: "사용자", scenarioTask: "구체적 작업", environment: "환경", reason: "이유", basis: "근거", confidence: "신뢰도", sources: "출처",
+        use: "사용", avoid: "사용하지 않음", retest: "추가 테스트", experiment: "실험", researchBasis: "외부 조사", combined: "실험과 조사", high: "높음", medium: "중간", low: "낮음",
+        audit: "실행 로그와 호출 증거", auditNote: "마지막 섹션은 두 방식이 실제 실행되었음을 보여 주는 원본 증거를 보존합니다.",
+        baselineEvidence: "기존 방식 증거", candidateEvidence: "새 기능 증거", evidenceFile: "증거 파일", footer: "capability-value-test가 로컬에서 생성했습니다. 외부 스크립트나 글꼴을 불러오지 않습니다."
+      }
+    };
 
     function node(tag, className, text) {
       const element = document.createElement(tag);
@@ -216,28 +345,46 @@
       if (text !== undefined && text !== null) element.textContent = String(text);
       return element;
     }
+    function isObject(value) { return value && typeof value === "object" && !Array.isArray(value); }
+    function mergeLocalized(base, overlay) {
+      if (overlay === undefined) return base;
+      if (Array.isArray(base) && Array.isArray(overlay)) {
+        if (base.every(isObject) && overlay.every(isObject)) {
+          return base.map((item, index) => overlay[index] ? mergeLocalized(item, overlay[index]) : item);
+        }
+        return overlay;
+      }
+      if (isObject(base) && isObject(overlay)) {
+        const result = { ...base };
+        Object.keys(overlay).forEach((key) => { result[key] = mergeLocalized(base[key], overlay[key]); });
+        return result;
+      }
+      return overlay;
+    }
+    function clear(id) { $(id).replaceChildren(); }
 
+    const localeEntries = baseData.i18n.locales;
+    let currentLocale = baseData.i18n.default_locale;
+    let data;
+    let copy;
+
+    function currentContent() {
+      const localized = localeEntries[currentLocale].content || {};
+      return mergeLocalized(JSON.parse(JSON.stringify(baseData)), localized);
+    }
     function formatNumber(value, digits = 1) {
-      return Number(value).toLocaleString(undefined, { maximumFractionDigits: digits });
+      return Number(value).toLocaleString(currentLocale, { maximumFractionDigits: digits });
     }
-
-    function formatSeconds(value) {
-      return `${formatNumber(value, 2)} s`;
-    }
-
+    function formatSeconds(value) { return `${formatNumber(value, 2)} s`; }
     function formatCost(arm) {
-      if (arm.cost === null || arm.cost === undefined) return missing;
+      if (arm.cost === null || arm.cost === undefined) return copy.missing;
       return `${arm.cost_currency || ""} ${formatNumber(arm.cost, 4)}`.trim();
     }
-
     function percentText(value, noun) {
-      if (value === null || value === undefined) return missing;
-      if (Math.abs(value) < 0.05) return `${noun}: no material change / 基本无变化`;
-      return value > 0
-        ? `${noun}: ${formatNumber(value)}% lower / 降低`
-        : `${noun}: ${formatNumber(Math.abs(value))}% higher / 增加`;
+      if (value === null || value === undefined) return copy.missing;
+      if (Math.abs(value) < 0.05) return `${noun}: ${copy.noChange}`;
+      return value > 0 ? `${noun}: ${formatNumber(value)}% ${copy.lower}` : `${noun}: ${formatNumber(Math.abs(value))}% ${copy.higher}`;
     }
-
     function addMetric(label, baselineValue, candidateValue, deltaText, deltaClass = "") {
       const card = node("div", "metric");
       card.append(node("div", "metric-label", label));
@@ -250,39 +397,14 @@
       card.append(values, node("div", `delta ${deltaClass}`.trim(), deltaText));
       $("metrics").append(card);
     }
-
     function renderMetrics() {
-      addMetric(
-        "Result quality / 结果质量",
-        data.baseline.quality.label,
-        data.candidate.quality.label,
-        `${data.candidate.quality.summary}`
-      );
+      addMetric(copy.quality, data.baseline.quality.label, data.candidate.quality.label, data.candidate.quality.summary);
       const timePct = data.computed.time_improvement_percent;
-      addMetric(
-        "End-to-end time / 总耗时",
-        formatSeconds(data.baseline.elapsed_seconds),
-        formatSeconds(data.candidate.elapsed_seconds),
-        percentText(timePct, "Candidate time / 候选耗时"),
-        timePct > 0 ? "good" : timePct < 0 ? "bad" : ""
-      );
+      addMetric(copy.time, formatSeconds(data.baseline.elapsed_seconds), formatSeconds(data.candidate.elapsed_seconds), percentText(timePct, copy.candidateTime), timePct > 0 ? "good" : timePct < 0 ? "bad" : "");
       const tokenPct = data.computed.token_improvement_percent;
-      addMetric(
-        "Tokens / Token 用量",
-        data.baseline.tokens ?? missing,
-        data.candidate.tokens ?? missing,
-        percentText(tokenPct, "Candidate tokens / 候选 Token"),
-        tokenPct > 0 ? "good" : tokenPct < 0 ? "bad" : ""
-      );
+      addMetric(copy.tokens, data.baseline.tokens ?? copy.missing, data.candidate.tokens ?? copy.missing, percentText(tokenPct, copy.candidateTokens), tokenPct > 0 ? "good" : tokenPct < 0 ? "bad" : "");
       const costPct = data.computed.cost_improvement_percent;
-      addMetric(
-        "Cost / 费用",
-        formatCost(data.baseline),
-        formatCost(data.candidate),
-        percentText(costPct, "Candidate cost / 候选费用"),
-        costPct > 0 ? "good" : costPct < 0 ? "bad" : ""
-      );
-
+      addMetric(copy.cost, formatCost(data.baseline), formatCost(data.candidate), percentText(costPct, copy.candidateCost), costPct > 0 ? "good" : costPct < 0 ? "bad" : "");
       const maxTime = Math.max(data.baseline.elapsed_seconds, data.candidate.elapsed_seconds, 0.001);
       [[data.baseline, "baseline"], [data.candidate, "candidate"]].forEach(([arm, kind]) => {
         const row = node("div", "bar-row");
@@ -295,15 +417,13 @@
         $("time-bars").append(row);
       });
     }
-
     function armHeading(arm, title) {
       const head = node("div", "arm-head");
       const text = node("div");
       text.append(node("h3", "", title), node("div", "arm-sub", `${arm.name}${arm.version ? ` · ${arm.version}` : ""}`));
-      head.append(text, node("span", `badge ${arm.verified ? "verified" : "unverified"}`, arm.verified ? "Verified / 已验证" : "Unverified / 无法验证"));
+      head.append(text, node("span", `badge ${arm.verified ? "verified" : "unverified"}`, arm.verified ? copy.verified : copy.unverified));
       return head;
     }
-
     function renderProcess(arm, targetId, title) {
       const target = $(targetId);
       target.append(armHeading(arm, title));
@@ -315,16 +435,53 @@
         timeline.append(step);
       });
       const result = node("div", "result-box");
-      result.append(node("strong", "", "Result / 结果"), node("div", "", arm.result_summary));
+      result.append(node("strong", "", copy.result), node("div", "", arm.result_summary));
       target.append(timeline, result);
     }
-
     function renderList(targetId, items) {
       const target = $(targetId);
       (items || []).forEach((item) => target.append(node("li", "", item)));
-      if (!items || items.length === 0) target.append(node("li", "", missing));
+      if (!items || items.length === 0) target.append(node("li", "", copy.missing));
     }
-
+    function renderResearch() {
+      $("research-summary").textContent = data.analysis.research.summary;
+      const target = $("research-sources");
+      const sources = data.analysis.research.sources || [];
+      if (!sources.length) { target.append(node("div", "source-card", copy.noSources)); return; }
+      sources.forEach((source) => {
+        const card = node("article", "source-card");
+        const link = node("a", "", source.title);
+        link.href = source.url; link.target = "_blank"; link.rel = "noreferrer";
+        card.append(link, node("div", "source-meta", `${source.publisher} · ${copy.retrieved}: ${source.retrieved_at}`));
+        const finding = node("p", "");
+        finding.append(node("strong", "", `${copy.sourceFinding}: `), document.createTextNode(source.finding));
+        card.append(finding);
+        target.append(card);
+      });
+    }
+    function renderScenarios() {
+      const sourceMap = Object.fromEntries((data.analysis.research.sources || []).map((source) => [source.id, source]));
+      data.analysis.scenarios.forEach((scenario) => {
+        const card = node("article", "scenario-card");
+        const top = node("div", "scenario-top");
+        top.append(node("h3", "", scenario.title), node("span", `scenario-badge ${scenario.recommendation}`, copy[scenario.recommendation]));
+        card.append(top);
+        const badges = node("div", "scenario-badges");
+        badges.append(node("span", "scenario-badge", `${copy.basis}: ${scenario.basis === "research" ? copy.researchBasis : copy[scenario.basis]}`));
+        badges.append(node("span", "scenario-badge", `${copy.confidence}: ${copy[scenario.confidence]}`));
+        card.append(badges);
+        [[copy.audience, scenario.audience], [copy.scenarioTask, scenario.task], [copy.environment, scenario.environment], [copy.reason, scenario.reason]].forEach(([label, value]) => {
+          const line = node("div", "scenario-line"); line.append(node("strong", "", `${label}: `), document.createTextNode(value)); card.append(line);
+        });
+        const refs = (scenario.source_refs || []).map((id) => sourceMap[id]).filter(Boolean);
+        if (refs.length) {
+          const line = node("div", "scenario-line"); line.append(node("strong", "", `${copy.sources}: `));
+          refs.forEach((source, index) => { if (index) line.append(document.createTextNode(" · ")); const link = node("a", "", source.title); link.href = source.url; link.target = "_blank"; link.rel = "noreferrer"; line.append(link); });
+          card.append(line);
+        }
+        $("scenarios").append(card);
+      });
+    }
     function renderEvidence(arm, targetId, title) {
       const target = $(targetId);
       target.append(armHeading(arm, title));
@@ -333,40 +490,67 @@
         details.append(node("summary", "", `${item.label} · ${item.type}`));
         const body = node("div", "evidence-body");
         if (item.content) body.append(node("pre", "", item.content));
-        if (item.data_url) {
-          const image = node("img");
-          image.src = item.data_url;
-          image.alt = item.label;
-          body.append(image);
-        } else if (item.path) {
-          body.append(node("div", "arm-sub", `Evidence file / 证据文件：${item.path}`));
-        }
+        if (item.data_url) { const image = node("img"); image.src = item.data_url; image.alt = item.label; body.append(image); }
+        else if (item.path) body.append(node("div", "arm-sub", `${copy.evidenceFile}: ${item.path}`));
         if (item.attachment_error) body.append(node("div", "attachment-error", item.attachment_error));
-        details.append(body);
-        target.append(details);
+        details.append(body); target.append(details);
       });
     }
-
-    document.title = data.title;
-    $("title").textContent = data.title;
-    $("verdict-summary").textContent = data.verdict.summary;
-    $("verdict").textContent = data.verdict.label;
-    $("verdict").dataset.status = data.verdict.status;
-    $("task").textContent = data.task;
-    $("question").textContent = data.primary_question;
-    $("tested-at").textContent = data.tested_at;
-    $("recommendation").textContent = data.analysis.recommendation;
-    $("limitation").textContent = data.verdict.limitation;
-
-    renderMetrics();
-    renderProcess(data.baseline, "baseline-process", "Baseline / 原方法");
-    renderProcess(data.candidate, "candidate-process", "Candidate / 新能力");
-    renderList("benefits", data.analysis.benefits);
-    renderList("tradeoffs", data.analysis.tradeoffs);
-    renderList("use-when", data.analysis.use_when);
-    renderList("avoid-when", data.analysis.avoid_when);
-    renderEvidence(data.baseline, "baseline-evidence", "Baseline evidence / 原方法证据");
-    renderEvidence(data.candidate, "candidate-evidence", "Candidate evidence / 新能力证据");
+    function setStaticText() {
+      const mapping = {
+        eyebrow: "eyebrow", "task-label": "task", "question-label": "question", "tested-label": "tested",
+        "comparison-title": "comparison", "comparison-note": "comparisonNote", "process-title": "process", "process-note": "processNote",
+        "experiment-findings-title": "experimentFindings", "experiment-findings-note": "experimentFindingsNote",
+        "research-title": "research", "research-note": "researchNote", "analysis-title": "analysis", "analysis-note": "analysisNote",
+        "benefits-title": "benefits", "tradeoffs-title": "tradeoffs", "scenarios-title": "scenarios",
+        "recommendation-title": "recommendation", "limitation-title": "limitation", "audit-title": "audit", "audit-note": "auditNote", footer: "footer"
+      };
+      Object.entries(mapping).forEach(([id, key]) => { $(id).textContent = copy[key]; });
+    }
+    function renderReport() {
+      data = currentContent();
+      copy = UI[currentLocale] || UI.en;
+      document.documentElement.lang = currentLocale;
+      document.documentElement.dir = localeEntries[currentLocale].direction || "ltr";
+      document.title = data.title;
+      setStaticText();
+      $("current-language").textContent = localeEntries[currentLocale].label;
+      $("title").textContent = data.title;
+      $("verdict-summary").textContent = data.verdict.summary;
+      $("verdict").textContent = data.verdict.label;
+      $("verdict").dataset.status = data.verdict.status;
+      $("task").textContent = data.task;
+      $("question").textContent = data.primary_question;
+      $("tested-at").textContent = data.tested_at;
+      $("recommendation").textContent = data.analysis.recommendation;
+      $("limitation").textContent = data.verdict.limitation;
+      ["metrics", "time-bars", "baseline-process", "candidate-process", "experiment-findings", "research-sources", "benefits", "tradeoffs", "scenarios", "baseline-evidence", "candidate-evidence"].forEach(clear);
+      renderMetrics();
+      renderProcess(data.baseline, "baseline-process", copy.baseline);
+      renderProcess(data.candidate, "candidate-process", copy.candidate);
+      renderList("experiment-findings", data.analysis.experiment_findings);
+      renderResearch();
+      renderList("benefits", data.analysis.benefits);
+      renderList("tradeoffs", data.analysis.tradeoffs);
+      renderScenarios();
+      renderEvidence(data.baseline, "baseline-evidence", copy.baselineEvidence);
+      renderEvidence(data.candidate, "candidate-evidence", copy.candidateEvidence);
+      renderLanguageMenu();
+    }
+    function renderLanguageMenu() {
+      const menu = $("language-menu"); menu.replaceChildren();
+      Object.entries(localeEntries).forEach(([code, locale]) => {
+        const option = node("button", "language-option"); option.type = "button"; option.setAttribute("role", "option"); option.setAttribute("aria-current", String(code === currentLocale));
+        option.append(node("span", "", locale.label), node("span", "", code === currentLocale ? "✓" : ""));
+        option.addEventListener("click", () => { currentLocale = code; closeLanguageMenu(); renderReport(); });
+        menu.append(option);
+      });
+    }
+    function closeLanguageMenu() { $("language-menu").hidden = true; $("language-button").setAttribute("aria-expanded", "false"); }
+    $("language-button").addEventListener("click", (event) => { event.stopPropagation(); const menu = $("language-menu"); menu.hidden = !menu.hidden; $("language-button").setAttribute("aria-expanded", String(!menu.hidden)); });
+    document.addEventListener("click", closeLanguageMenu);
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeLanguageMenu(); });
+    renderReport();
   </script>
 </body>
 </html>

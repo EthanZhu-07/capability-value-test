@@ -59,6 +59,8 @@ python3 scripts/render_report.py tests/sample-experiment.json --output report.ht
 
 Le générateur utilise uniquement la bibliothèque standard Python et produit un fichier HTML unique utilisable hors ligne.
 
+La dernière version utilise un format de rapport fixe et versionné. Tous les rapports conservent les mêmes sections et le même ordre, avec une explication sous chaque titre principal. La langue par défaut correspond à la langue de conversation de l’utilisateur et peut être changée en haut à droite. L’analyse distingue les résultats de l’expérience, les recherches externes citées et la recommandation finale, puis décrit chaque scénario par un utilisateur, une tâche et un environnement concrets.
+
 ## Limites
 
 - Une exécution par méthode fournit une indication, pas une garantie statistique.

@@ -20,7 +20,17 @@ jobs:
       - name: Check standalone report contents
         run: |
           grep -q "Sample capability value test" /tmp/capability-value-report.html
+          grep -q 'data-report-format-version="1.0"' /tmp/capability-value-report.html
+          grep -q "language-button" /tmp/capability-value-report.html
+          grep -q "experiment_findings" /tmp/capability-value-report.html
+          grep -q "research-sources" /tmp/capability-value-report.html
           grep -q "Execution logs and invocation evidence" /tmp/capability-value-report.html
+          grep -q 'id="comparison-note"' /tmp/capability-value-report.html
+          grep -q 'id="process-note"' /tmp/capability-value-report.html
+          grep -q 'id="experiment-findings-note"' /tmp/capability-value-report.html
+          grep -q 'id="research-note"' /tmp/capability-value-report.html
+          grep -q 'id="analysis-note"' /tmp/capability-value-report.html
+          grep -q 'id="audit-note"' /tmp/capability-value-report.html
       - name: Reject invalid sample
         run: |
           if python3 scripts/render_report.py tests/invalid-experiment.json --output /tmp/invalid.html; then

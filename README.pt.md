@@ -59,6 +59,8 @@ python3 scripts/render_report.py tests/sample-experiment.json --output report.ht
 
 O gerador usa apenas a biblioteca padrão do Python e cria um único HTML que funciona offline.
 
+A versão mais recente usa um formato de relatório fixo e versionado. Todos os relatórios mantêm as mesmas seções e a mesma ordem, com uma explicação abaixo de cada título principal. O idioma padrão acompanha o idioma da conversa do usuário e pode ser alterado no canto superior direito. A análise separa os resultados do experimento, a pesquisa externa com fontes e a recomendação final, descrevendo cada cenário por uma pessoa, uma tarefa e um ambiente concretos.
+
 ## Limites
 
 - Uma execução por método fornece evidência direcional, não garantia estatística.

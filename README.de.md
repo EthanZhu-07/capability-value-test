@@ -59,6 +59,8 @@ python3 scripts/render_report.py tests/sample-experiment.json --output report.ht
 
 Der Renderer nutzt nur die Python-Standardbibliothek und erzeugt eine einzelne offline nutzbare HTML-Datei.
 
+Die aktuelle Version verwendet ein festes, versioniertes Berichtsformat. Jeder Bericht behält dieselben Abschnitte und dieselbe Reihenfolge bei und erklärt jeden Hauptabschnitt direkt unter seiner Überschrift. Die Standardsprache entspricht der Gesprächssprache des Nutzers und kann oben rechts gewechselt werden. Die Analyse trennt Versuchsergebnisse, belegte externe Recherche und die abschließende Empfehlung und beschreibt Einsatzszenarien anhand konkreter Nutzer, Aufgaben und Umgebungen.
+
 ## Grenzen
 
 - Ein Lauf pro Methode liefert richtungsweisende Belege, keine statistische Garantie.

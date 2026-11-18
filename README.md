@@ -21,12 +21,13 @@ The problem is not only whether an integration works. Its process is often invis
 ## How it works
 
 1. Define the new capability and the methods before and after integration.
-2. Choose one real task both methods can complete.
+2. Choose one real, representative task the user can understand without learning unrelated technical jargon.
 3. Keep inputs, environment, constraints, timing scope, and evaluation criteria aligned.
 4. Present the complete A/B test design for human review; revise it when rejected.
 5. Run both arms only after explicit approval.
 6. Record the process, outputs, metrics, and invocation evidence for both arms.
-7. Analyze the differences and render a standalone HTML report.
+7. Separate what the experiment proved from what public sources say, then synthesize concrete usage scenarios and a recommendation.
+8. Render a standalone HTML report in the user's conversation language by default, with a top-right language dropdown.
 
 The goal is not to make the new capability win. It is to establish what changed and whether the evidence supports adoption.
 
@@ -40,7 +41,7 @@ The report uses exactly one verdict:
 - **Do not adopt**
 - **Inconclusive — more evidence is required**
 
-It explains the basis, strengths, problems, suitable and unsuitable scenarios, and experimental limits.
+It explains the basis, strengths, problems, concrete suitable and unsuitable scenarios, and experimental limits. A scenario identifies who is doing what task, in what environment, and why the capability fits or does not fit.
 
 ### 2. Value and benefits
 
@@ -49,6 +50,14 @@ The report can compare result quality, end-to-end elapsed time, token usage, cos
 ### 3. Proof of invocation
 
 The final section keeps separate evidence for both arms, such as commands, tool or API calls, key inputs and outputs, logs, timestamps, task IDs, status values, errors, and retries. Evidence must be real and secrets must be redacted.
+
+### 4. Experiment evidence and external research
+
+The report visibly separates observations from the approved A/B test, findings supported by cited public sources, and the final synthesis. Research adds decision context when one experiment cannot establish general strengths, tradeoffs, or usage scenarios; it never overrides a failed experimental result.
+
+### 5. Report language
+
+The report initially uses the user's conversation language. A language button in the top-right opens a dropdown for switching the complete narrative report offline. Raw commands, logs, errors, and tool output stay in their original form so the evidence remains auditable.
 
 ## Human approval is required
 
@@ -108,6 +117,8 @@ python3 scripts/render_report.py tests/sample-experiment.json --output report.ht
 ```
 
 The result is a self-contained HTML file that opens offline in a modern browser. The fixtures are demonstration data, not claims about real products.
+
+The HTML layout is a versioned, fixed report format. Every report keeps the same section order and includes a short explanation below each major heading so readers know what the section means and how to interpret its evidence. Experiment-specific content changes through `experiment.json`; individual runs do not create custom layouts.
 
 ## Limits and privacy
 

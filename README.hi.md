@@ -59,6 +59,8 @@ python3 scripts/render_report.py tests/sample-experiment.json --output report.ht
 
 Renderer केवल Python standard library का उपयोग करता है और offline खुलने वाली एक HTML file बनाता है।
 
+नवीनतम संस्करण एक versioned और fixed report format का उपयोग करता है। हर report में वही sections और वही क्रम रहता है, और प्रत्येक मुख्य heading के नीचे उसका अर्थ समझाने वाला text होता है। Default भाषा उपयोगकर्ता की बातचीत की भाषा होती है और ऊपर दाईं ओर से बदली जा सकती है। Analysis में प्रयोग के परिणाम, स्रोतों पर आधारित बाहरी research और अंतिम recommendation अलग-अलग दिखते हैं, तथा उपयोग के scenarios को व्यक्ति, task और environment के रूप में स्पष्ट किया जाता है।
+
 ## सीमाएँ
 
 - प्रत्येक विधि का एक run केवल दिशात्मक प्रमाण देता है, सांख्यिकीय गारंटी नहीं।

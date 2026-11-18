@@ -1,6 +1,6 @@
 {
   "title": "Sample capability value test",
-  "tested_at": "2026-11-17",
+  "tested_at": "2026-11-18",
   "task": "Extract the title, publication date, and three key points from the same public article.",
   "primary_question": "Can the candidate reduce end-to-end time without reducing result quality?",
   "verdict": {
@@ -17,7 +17,11 @@
     "tokens": null,
     "cost": null,
     "cost_currency": "USD",
-    "quality": {"status": "met", "label": "Requirements met", "summary": "Returned all required fields and three supported key points."},
+    "quality": {
+      "status": "met",
+      "label": "Requirements met",
+      "summary": "Returned all required fields and three supported key points."
+    },
     "steps": [
       {"time": "00:00", "title": "Started baseline", "detail": "Submitted the shared URL and extraction requirements."},
       {"time": "00:06", "title": "Loaded article", "detail": "Retrieved and parsed the public page."},
@@ -37,7 +41,11 @@
     "tokens": null,
     "cost": null,
     "cost_currency": "USD",
-    "quality": {"status": "met", "label": "Requirements met", "summary": "Returned all required fields and three supported key points."},
+    "quality": {
+      "status": "met",
+      "label": "Requirements met",
+      "summary": "Returned all required fields and three supported key points."
+    },
     "steps": [
       {"time": "00:00", "title": "Started candidate", "detail": "Submitted the same URL and extraction requirements."},
       {"time": "00:03", "title": "Loaded article", "detail": "Retrieved and parsed the public page through the candidate."},
@@ -50,10 +58,156 @@
     ]
   },
   "analysis": {
-    "benefits": ["Equivalent sample output in less end-to-end time.", "Invocation is represented by separate candidate evidence."],
-    "tradeoffs": ["This fixture does not measure cold-start setup time.", "Token and cost data were not available."],
-    "use_when": ["The task matches the tested public-page extraction workflow.", "The same operation is repeated often enough for the time difference to matter."],
-    "avoid_when": ["A visible or authenticated browser session is required.", "The candidate cannot provide verifiable invocation evidence."],
-    "recommendation": "Run the same approved design with real tools and real evidence before making an adoption decision."
+    "experiment_findings": [
+      "Both methods met the same extraction requirements in this fixture.",
+      "The candidate completed the task in 8.1 seconds versus 14.2 seconds for the current method.",
+      "Token and cost data were not available from the host."
+    ],
+    "research": {
+      "status": "completed",
+      "summary": "Official project information was used only to describe likely workload fit; it does not turn this fixture into a product benchmark.",
+      "sources": [
+        {
+          "id": "lightpanda-repo",
+          "title": "Lightpanda Browser",
+          "publisher": "Lightpanda",
+          "url": "https://github.com/lightpanda-io/browser",
+          "retrieved_at": "2026-11-18",
+          "finding": "The project presents Lightpanda as a headless browser designed for AI agents and automation."
+        }
+      ]
+    },
+    "benefits": [
+      "Equivalent fixture output in less end-to-end time.",
+      "The candidate invocation is represented by separate tool evidence."
+    ],
+    "tradeoffs": [
+      "The fixture does not test authenticated, visual, or highly interactive pages.",
+      "Token and cost data were not available."
+    ],
+    "scenarios": [
+      {
+        "title": "Batch extraction from public, text-heavy articles",
+        "audience": "A researcher or content operator",
+        "task": "Collect titles, dates, and key points from many public articles",
+        "environment": "Pages expose readable text without login or visual interaction",
+        "recommendation": "retest",
+        "reason": "The sample suggests a time advantage, while the official project positioning matches headless automation; a real multi-page run is still required.",
+        "basis": "combined",
+        "confidence": "medium",
+        "source_refs": ["lightpanda-repo"]
+      },
+      {
+        "title": "Tasks requiring a visible, authenticated browser",
+        "audience": "A user completing account or checkout steps",
+        "task": "Sign in, inspect visual state, and submit a consequential action",
+        "environment": "The workflow needs user observation, authentication, or visual confirmation",
+        "recommendation": "avoid",
+        "reason": "This experiment did not test those requirements, and a headless automation tool should not replace the visible browser without a dedicated test.",
+        "basis": "combined",
+        "confidence": "medium",
+        "source_refs": ["lightpanda-repo"]
+      }
+    ],
+    "recommendation": "Run the same approved design with real tools and evidence on a representative public-page workload before adopting the candidate."
+  },
+  "i18n": {
+    "default_locale": "en",
+    "locales": {
+      "en": {"label": "English", "direction": "ltr", "content": {}},
+      "zh-CN": {
+        "label": "简体中文",
+        "direction": "ltr",
+        "content": {
+          "title": "新能力价值测试示例",
+          "task": "从同一篇公开文章中提取标题、发布日期和三个要点。",
+          "primary_question": "新能力能否在不降低结果质量的情况下减少任务完成耗时？",
+          "verdict": {
+            "label": "证据不足，需要补充实验",
+            "summary": "新能力以相同质量、更短耗时完成了示例任务，但单次演示不能构成普遍结论。",
+            "limitation": "每种方法只运行一次；以下数字是演示数据，不代表任何真实产品。"
+          },
+          "baseline": {
+            "name": "当前方法",
+            "version": "示例配置",
+            "quality": {"label": "满足要求", "summary": "返回了全部字段和三个有依据的要点。"},
+            "steps": [
+              {"title": "开始当前方法", "detail": "提交共同网址和提取要求。"},
+              {"title": "加载文章", "detail": "获取并解析公开页面。"},
+              {"title": "完成输出", "detail": "返回要求的结构化摘要。"}
+            ],
+            "result_summary": "完整提取了标题、日期和三个要点。"
+          },
+          "candidate": {
+            "name": "新能力方法",
+            "version": "示例配置",
+            "quality": {"label": "满足要求", "summary": "返回了全部字段和三个有依据的要点。"},
+            "steps": [
+              {"title": "开始新能力方法", "detail": "提交相同网址和提取要求。"},
+              {"title": "加载文章", "detail": "通过新能力获取并解析公开页面。"},
+              {"title": "完成输出", "detail": "返回要求的结构化摘要。"}
+            ],
+            "result_summary": "完整提取了标题、日期和三个要点。"
+          },
+          "analysis": {
+            "experiment_findings": ["两种方法都满足了相同的提取要求。", "新能力耗时 8.1 秒，当前方法耗时 14.2 秒。", "宿主没有提供 Token 和成本数据。"],
+            "research": {"summary": "官方资料只用于描述可能适合的工作负载，不能把演示数据变成产品基准。", "sources": [{"title": "Lightpanda 浏览器", "finding": "项目将 Lightpanda 定位为面向 AI Agent 和自动化的无头浏览器。"}]},
+            "benefits": ["在示例中以相同质量缩短了任务完成耗时。", "独立工具证据可以验证新能力确实被调用。"],
+            "tradeoffs": ["示例没有测试登录、视觉或复杂交互页面。", "Token 和成本数据不可用。"],
+            "scenarios": [
+              {"title": "批量提取公开文字文章", "audience": "研究人员或内容运营", "task": "从多篇公开文章提取标题、日期和要点", "environment": "页面无需登录或视觉交互即可读取正文", "reason": "示例显示耗时优势，官方定位也符合无头自动化，但仍需真实批量测试。"},
+              {"title": "需要可视化登录浏览器的任务", "audience": "执行账户或结账操作的用户", "task": "登录、确认视觉状态并提交有后果的操作", "environment": "流程需要人类观察、身份验证或视觉确认", "reason": "本次实验没有验证这些要求，不能直接用无头工具替代可视化浏览器。"}
+            ],
+            "recommendation": "先在真实、具有代表性的公开网页任务上重做同一实验，再决定是否采用。"
+          }
+        }
+      },
+      "ja": {
+        "label": "日本語",
+        "direction": "ltr",
+        "content": {
+          "title": "新能力価値テストのサンプル",
+          "task": "同じ公開記事からタイトル、公開日、3つの要点を抽出する。",
+          "primary_question": "結果品質を落とさずに完了時間を短縮できるか。",
+          "verdict": {"label": "証拠不足 — 追加実験が必要", "summary": "同等品質で短時間に完了したが、1回のデモは一般的なベンチマークではありません。", "limitation": "各方式1回のデモデータであり、実製品の主張ではありません。"},
+          "baseline": {"name": "現在の方式", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "必要な項目をすべて返しました。"}, "steps": [{"title": "現在方式を開始", "detail": "共通URLと抽出条件を送信しました。"}, {"title": "記事を読み込み", "detail": "公開ページを取得して解析しました。"}, {"title": "出力を完了", "detail": "指定形式の要約を返しました。"}], "result_summary": "タイトル、日付、3つの要点を完全に抽出しました。"},
+          "candidate": {"name": "新しい能力", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "必要な項目をすべて返しました。"}, "steps": [{"title": "新方式を開始", "detail": "同じURLと抽出条件を送信しました。"}, {"title": "記事を読み込み", "detail": "新能力で公開ページを取得して解析しました。"}, {"title": "出力を完了", "detail": "指定形式の要約を返しました。"}], "result_summary": "タイトル、日付、3つの要点を完全に抽出しました。"},
+          "analysis": {
+            "experiment_findings": ["両方式が同じ要件を満たしました。", "新方式は8.1秒、現在方式は14.2秒でした。", "Tokenとコストは取得できませんでした。"],
+            "research": {"summary": "公式情報は用途の背景にのみ使い、製品ベンチマークとはしません。", "sources": [{"title": "Lightpanda Browser", "finding": "Lightpanda は AI Agent と自動化向けのヘッドレスブラウザとして紹介されています。"}]},
+            "benefits": ["同等品質で完了時間が短縮しました。", "独立したツール記録で呼び出しを確認できます。"],
+            "tradeoffs": ["認証や視覚操作はテストしていません。", "Tokenとコストは取得できませんでした。"],
+            "scenarios": [
+              {"title": "公開テキスト記事の一括抽出", "audience": "調査担当者やコンテンツ運用者", "task": "多数の記事からタイトル、日付、要点を収集する", "environment": "ログインや視覚操作なしで本文を読めるページ", "reason": "サンプルでは時間差があり公式の用途とも合いますが、実データでの再テストが必要です。"},
+              {"title": "表示とログインが必要な操作", "audience": "アカウント操作や決済を行う利用者", "task": "ログインして表示を確認し、影響のある操作を送信する", "environment": "人の監視、認証、視覚確認が必要", "reason": "今回の実験では未検証のため、専用テストなしに可視ブラウザを置き換えられません。"}
+            ],
+            "recommendation": "実際の代表的なタスクで再テストしてから採用を判断してください。"
+          }
+        }
+      },
+      "ko": {
+        "label": "한국어",
+        "direction": "ltr",
+        "content": {
+          "title": "새 기능 가치 테스트 예시",
+          "task": "같은 공개 기사에서 제목, 게시일, 세 가지 핵심 내용을 추출합니다.",
+          "primary_question": "결과 품질을 낮추지 않고 완료 시간을 줄일 수 있는가?",
+          "verdict": {"label": "증거 부족 — 추가 실험 필요", "summary": "같은 품질로 더 빨리 완료했지만 한 번의 데모는 일반적인 벤치마크가 아닙니다.", "limitation": "각 방식 1회 실행의 데모 데이터이며 실제 제품에 대한 주장이 아닙니다."},
+          "baseline": {"name": "현재 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "필요한 항목을 모두 반환했습니다."}, "steps": [{"title": "현재 방식 시작", "detail": "공통 URL과 추출 요구를 제출했습니다."}, {"title": "기사 불러오기", "detail": "공개 페이지를 가져와 분석했습니다."}, {"title": "출력 완료", "detail": "요청한 구조화 요약을 반환했습니다."}], "result_summary": "제목, 날짜, 세 가지 핵심 내용을 모두 추출했습니다."},
+          "candidate": {"name": "새 기능 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "필요한 항목을 모두 반환했습니다."}, "steps": [{"title": "새 방식 시작", "detail": "같은 URL과 추출 요구를 제출했습니다."}, {"title": "기사 불러오기", "detail": "새 기능으로 공개 페이지를 가져와 분석했습니다."}, {"title": "출력 완료", "detail": "요청한 구조화 요약을 반환했습니다."}], "result_summary": "제목, 날짜, 세 가지 핵심 내용을 모두 추출했습니다."},
+          "analysis": {
+            "experiment_findings": ["두 방식 모두 같은 요구 사항을 충족했습니다.", "새 방식은 8.1초, 현재 방식은 14.2초가 걸렸습니다.", "Token과 비용 데이터는 제공되지 않았습니다."],
+            "research": {"summary": "공식 정보는 적합한 작업 배경에만 사용하며 제품 벤치마크로 취급하지 않습니다.", "sources": [{"title": "Lightpanda Browser", "finding": "Lightpanda는 AI Agent와 자동화를 위한 헤드리스 브라우저로 소개됩니다."}]},
+            "benefits": ["같은 품질로 완료 시간을 줄였습니다.", "별도 도구 기록으로 실제 호출을 검증할 수 있습니다."],
+            "tradeoffs": ["인증이나 시각적 작업은 테스트하지 않았습니다.", "Token과 비용 데이터는 제공되지 않았습니다."],
+            "scenarios": [
+              {"title": "공개 텍스트 기사 일괄 추출", "audience": "연구자 또는 콘텐츠 운영자", "task": "여러 공개 기사에서 제목, 날짜, 핵심 내용을 수집", "environment": "로그인이나 시각적 조작 없이 본문을 읽을 수 있는 페이지", "reason": "예시에서 시간 이점이 나타났고 공식 용도와도 맞지만 실제 다중 페이지 테스트가 필요합니다."},
+              {"title": "화면 확인과 로그인이 필요한 작업", "audience": "계정 또는 결제 절차를 수행하는 사용자", "task": "로그인하고 화면 상태를 확인한 뒤 중요한 작업을 제출", "environment": "사람의 관찰, 인증 또는 시각적 확인이 필요한 흐름", "reason": "이번 실험에서는 검증하지 않았으므로 별도 테스트 없이 시각적 브라우저를 대체할 수 없습니다."}
+            ],
+            "recommendation": "실제 대표 작업에서 다시 테스트한 뒤 도입을 결정하세요."
+          }
+        }
+      }
+    }
   }
 }

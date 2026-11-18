@@ -14,6 +14,8 @@ Deliver a standalone HTML report that shows:
 - how their result quality and end-to-end time compare;
 - token usage and cost when the host actually exposes them;
 - where the candidate is useful, where it is not, and whether to adopt it.
+- experiment findings, external research, and the final synthesis as distinct evidence layers;
+- the user's conversation language by default, with an offline language switcher in the top-right corner.
 
 One run provides directional evidence only. Never present it as universal proof.
 
@@ -29,12 +31,14 @@ Do not use it for ordinary “does this function work?” checks, formal statist
 
 ## Minimum inputs
 
-Determine four things:
+Determine six things:
 
 1. **Candidate** — the newly added capability.
 2. **Baseline** — the user's real current method.
 3. **Representative task** — one real task both methods can complete.
 4. **Primary value question** — usually quality, elapsed time, tokens, or cost.
+5. **Audience context** — the user's domain knowledge and what would make the task immediately understandable.
+6. **Report language** — the user's primary conversation language plus useful alternate report languages.
 
 Infer these from the conversation and environment when reliable. If a missing choice would materially change the test, ask one combined question instead of interviewing the user field by field. If no baseline is supplied, propose a realistic one.
 
@@ -49,6 +53,9 @@ Infer these from the conversation and environment when reliable. If a missing ch
 - Do not present a reconstructed headless timeline as a live recording. Label it as an execution record.
 - Normal authorization rules still apply to login, payment, submission, deletion, communication, or other side effects.
 - Use the user's language for the test plan, report content, and final response.
+- Prefer a representative task the user can understand without learning unrelated jargon. Technical sophistication is not evidence quality.
+- Keep raw commands, logs, error messages, and tool output in their original language. Translate their labels and explanations, never the evidence itself.
+- External research may add context but must never overwrite, excuse, or contradict an observed experiment result without saying so explicitly.
 
 ## Workflow
 
@@ -65,11 +72,20 @@ Primary metric:
 Required metrics: result quality, end-to-end elapsed time
 Optional metrics: tokens, cost
 Invocation evidence expected from each arm:
+Audience and comprehension check:
+Default report language and alternate languages:
 Known limitations:
 Stopping rule:
 ```
 
 Default to one run per arm. This is an MVP value check, not a statistical benchmark.
+
+Before requesting approval, apply a comprehension gate:
+
+- explain the shared task in one plain-language sentence;
+- remove domain jargon that is unrelated to the value question;
+- prefer outcomes the user can independently recognize as correct;
+- if the task assumes specialist knowledge the user has not shown, replace it with a simpler representative task.
 
 If a fair A/B comparison is impossible, explain why and revise the task or baseline before requesting approval. Do not manufacture a comparator.
 
@@ -124,7 +140,23 @@ Check result quality before efficiency. A faster failed result is not an improve
 
 Calculate differences and percentages only when units match, values are present, and the denominator is greater than zero.
 
-### 6. Write the recommendation
+### 6. Research missing decision context
+
+First write down what the experiment directly established. Then check whether the experiment alone supports concrete benefits, tradeoffs, and usage scenarios.
+
+When it does not, search the public web for current context. Prefer official documentation, the official repository, product documentation, and primary sources; add reputable independent sources only when they materially improve the decision. Record the source title, publisher, direct URL, retrieval date, and the specific finding supported by that source.
+
+Keep three layers separate:
+
+1. **Experiment findings** — observed in the approved A/B test.
+2. **External research** — supported by cited public sources.
+3. **Synthesis** — the recommendation produced from both layers.
+
+Describe scenarios concretely. Each scenario must identify who is doing what task, in what environment, why the capability fits or does not fit, the evidence basis, and confidence. Avoid labels such as “good for static pages” without a real example.
+
+If browsing is unavailable or reliable sources cannot be found, say so in the report instead of inventing context.
+
+### 7. Write the recommendation
 
 Use exactly one verdict:
 
@@ -139,15 +171,24 @@ Explain:
 - its suitable and unsuitable scenarios;
 - what this one experiment did not establish.
 
-### 7. Build the report data
+### 8. Build the report data
 
 Create an output directory inside the current task workspace. Write the observed experiment data to `experiment.json`, following the structure in `tests/sample-experiment.json` next to this Skill.
+
+The `analysis` object must contain:
+
+- non-empty `experiment_findings`;
+- `research.status`, `research.summary`, and cited `research.sources` when research completed;
+- concrete `scenarios` with audience, task, environment, recommendation, reason, evidence basis, confidence, and source references;
+- benefits, tradeoffs, and the final recommendation.
+
+Set `i18n.default_locale` from the user's primary conversation language. Include at least that locale plus useful alternates in `i18n.locales`; when the user has not specified alternatives, prefer English, Simplified Chinese, Japanese, and Korean where practical. Each non-default locale contains translated narrative content. Raw evidence content remains untranslated.
 
 Do not include secrets, cookies, authorization headers, private tokens, or unrelated user data. Redact sensitive values before writing evidence.
 
 Use `null` for unavailable token and cost values. Keep raw evidence concise; include only the portion needed to verify execution.
 
-### 8. Render the standalone HTML
+### 9. Render the standalone HTML
 
 Run:
 
@@ -157,14 +198,33 @@ python3 <skill-directory>/scripts/render_report.py <output-directory>/experiment
 
 The renderer uses only the Python standard library and creates a self-contained HTML file without external CDNs, fonts, or scripts.
 
+#### Fixed report format
+
+Use `assets/report-template.html` as the fixed report format. Do not create a new layout for an individual experiment, remove sections, or reorder the sections. Experiment-specific differences belong in `experiment.json`, not in a custom HTML structure. Change the format only when intentionally revising this Skill and update the renderer contract and tests at the same time.
+
+Every major section must keep its short reader-facing explanation directly below the heading. These explanations are part of the format, not optional experiment content:
+
+- **Core comparison** — explain that unavailable measurements remain unavailable and are not treated as zero.
+- **Process comparison** — explain that the timeline is an execution record and not a live recording.
+- **Experiment findings** — explain that this section contains only observations from the approved A/B test.
+- **External research** — explain that public sources add context the experiment alone could not establish.
+- **Analysis and recommendation** — explain that the synthesis uses both evidence layers while preserving their differences.
+- **Execution logs and invocation evidence** — explain that the final section contains the observable evidence used to verify both methods actually ran.
+
+The renderer enforces this structure and must fail rather than silently generate a report when a required section, explanation field, format marker, or section order is missing.
+
 The HTML must present, in this order:
 
 1. experiment title, shared task, verdict, and one-line conclusion;
 2. core metric cards for quality, time, tokens, and cost;
 3. side-by-side baseline and candidate process timelines;
 4. result summaries and value differences;
-5. benefits, tradeoffs, use cases, limitations, and adoption recommendation;
-6. **as the final section: Execution logs and invocation evidence**.
+5. experiment findings;
+6. external research with direct source links and retrieval dates;
+7. benefits, tradeoffs, concrete scenarios, limitations, and adoption recommendation;
+8. **as the final section: Execution logs and invocation evidence**.
+
+The report must initially show only the default language. Put the current language control in the top-right corner; clicking it opens a dropdown list. Changing the selection updates the complete report without network access. Do not display bilingual headings side by side.
 
 The final evidence section must contain separate baseline and candidate columns with:
 
@@ -177,7 +237,7 @@ The final evidence section must contain separate baseline and candidate columns 
 
 Long logs must be collapsed by default and expandable by the user. Never write assistant-authored prose in a way that imitates a system log.
 
-### 9. Verify the artifact
+### 10. Verify the artifact
 
 Open or render `report.html` and check:
 
@@ -188,10 +248,16 @@ Open or render `report.html` and check:
 - the verdict matches the observed data and written analysis;
 - the invocation evidence is visible in the final section;
 - no secrets or private identifiers appear in the page.
+- the default language matches the user's conversation language;
+- the top-right dropdown opens, closes, marks the active language, and switches all translated narrative content;
+- the report declares the fixed format version and retains every required section explanation;
+- raw evidence stays unchanged when the report language changes;
+- experiment findings, external research, and synthesis are visibly distinct;
+- scenarios are concrete rather than generic labels.
 
 Fix any defect before delivery.
 
-### 10. Deliver
+### 11. Deliver
 
 The final response should contain only what the user needs to act:
 
