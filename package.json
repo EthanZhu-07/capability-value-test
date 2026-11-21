@@ -1,0 +1,42 @@
+{
+  "name": "dsh-capability-value-test",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness adapter for the agent-agnostic Capability Value Test skill.",
+  "type": "module",
+  "main": "adapters/deepseek-harness/index.js",
+  "files": [
+    "SKILL.md",
+    "assets/**",
+    "scripts/**",
+    "adapters/deepseek-harness/index.js",
+    "adapters/deepseek-harness/cordis.patch.yml"
+  ],
+  "scripts": {
+    "test": "node --test adapters/deepseek-harness/test/*.test.js",
+    "pack:check": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": ">=0.2.0 <0.3.0"
+  },
+  "keywords": [
+    "agent-skill",
+    "capability-evaluation",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EthanZhu-07/capability-value-test.git"
+  },
+  "homepage": "https://github.com/EthanZhu-07/capability-value-test#readme",
+  "bugs": {
+    "url": "https://github.com/EthanZhu-07/capability-value-test/issues"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./adapters/deepseek-harness/cordis.patch.yml"
+    }
+  }
+}
