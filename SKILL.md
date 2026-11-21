@@ -14,8 +14,8 @@ Deliver a standalone HTML report that shows:
 - how their result quality and end-to-end time compare;
 - token usage and cost when the host actually exposes them;
 - where the candidate is useful, where it is not, and whether to adopt it.
-- experiment findings, external research, and the final synthesis as distinct evidence layers;
-- the user's conversation language by default, with an offline language switcher in the top-right corner.
+- experiment findings, mandatory external research, and the final synthesis as distinct evidence layers;
+- the user's conversation language by default, with complete English, Simplified Chinese, Japanese, and Korean versions available from an offline language switcher in the top-right corner.
 
 Three representative rounds provide stronger directional evidence than a single run, but they are still not universal proof.
 
@@ -38,7 +38,7 @@ Determine six things:
 3. **Representative tasks** — three real task samples both methods can complete, drawn from work the user actually does.
 4. **Primary value question** — usually quality, elapsed time, tokens, or cost.
 5. **Audience context** — the user's domain knowledge and what would make the task immediately understandable.
-6. **Report language** — the user's primary conversation language plus useful alternate report languages.
+6. **Report language** — the user's primary conversation language, with complete English, Simplified Chinese, Japanese, and Korean report versions.
 
 Infer these from the conversation and environment when reliable. If a missing choice would materially change the test, ask one combined question instead of interviewing the user field by field. If no baseline is supplied, propose a realistic one.
 
@@ -55,7 +55,8 @@ Infer these from the conversation and environment when reliable. If a missing ch
 - Use the user's language for the test plan, report content, and final response.
 - Prefer a representative task the user can understand without learning unrelated jargon. Technical sophistication is not evidence quality.
 - Keep raw commands, logs, error messages, and tool output in their original language. Translate their labels and explanations, never the evidence itself.
-- External research may add context but must never overwrite, excuse, or contradict an observed experiment result without saying so explicitly.
+- External research is required for every completed test, but must never overwrite, excuse, or contradict an observed experiment result without saying so explicitly.
+- A language option may appear only when every reader-facing field is available in that language. Raw logs, commands, tool output, and other invocation evidence remain in their original language.
 
 ## Workflow
 
@@ -76,7 +77,7 @@ Invocation evidence expected from each arm:
 Fair-comparison conditions:
 Quality judgment rule:
 Audience and comprehension check:
-Default report language and alternate languages:
+Default report language and the four required report languages:
 Known limitations:
 Stopping rule:
 ```
@@ -145,11 +146,11 @@ Check result quality before efficiency. A faster failed result is not an improve
 
 Calculate differences and percentages only when units match, values are present, and the denominator is greater than zero.
 
-### 6. Research missing decision context
+### 6. Research external decision context
 
-First write down what the experiment directly established. Then check whether the experiment alone supports concrete benefits, tradeoffs, and usage scenarios.
+First write down what the experiment directly established. Then perform public-web research for every test, even when the experiment already appears decisive. The research is required to verify the capability's stated purpose, documented strengths and limitations, and realistic usage boundaries that the three rounds may not expose.
 
-When it does not, search the public web for current context. Prefer official documentation, the official repository, product documentation, and primary sources; add reputable independent sources only when they materially improve the decision. Record the source title, publisher, direct URL, and the specific finding supported by that source.
+Prefer official documentation, the official repository, product documentation, and primary sources; add reputable independent sources only when they materially improve the decision. Record the source title, publisher, direct URL, and the specific finding supported by that source. When public navigation does not require authentication or a visible browser, prefer a lightweight headless browser such as Lightpanda when it is available.
 
 Keep three layers separate:
 
@@ -159,7 +160,7 @@ Keep three layers separate:
 
 Describe scenarios concretely. Each scenario must identify who is doing what task, in what environment, why the capability fits or does not fit, the evidence basis, and confidence. Avoid labels such as “good for static pages” without a real example.
 
-If browsing is unavailable or reliable sources cannot be found, say so in the report instead of inventing context.
+Do not skip research merely because the experiment appears sufficient. If browsing is technically unavailable or no reliable source can be found after a real attempt, record the attempt as blocked and state the concrete blocker. “No external research was performed” is not a valid completed-report state.
 
 ### 7. Write the recommendation
 
@@ -191,11 +192,14 @@ The `design` object must state:
 The `analysis` object must contain:
 
 - non-empty `experiment_findings`;
-- `research.status`, `research.summary`, and cited `research.sources` when research completed;
+- `research.attempted: true`, `research.status`, and `research.summary`;
+- at least one cited `research.sources` entry when research completed, or a concrete `research.blocker` when the attempt was blocked;
 - concrete `scenarios` with audience, task, environment, recommendation, reason, evidence basis, confidence, and source references;
 - benefits, tradeoffs, and the final recommendation.
 
-Set `i18n.default_locale` from the user's primary conversation language. Include at least that locale plus useful alternates in `i18n.locales`; when the user has not specified alternatives, prefer English, Simplified Chinese, Japanese, and Korean where practical. Each non-default locale contains translated narrative content. Raw evidence content remains untranslated.
+Set `i18n.default_locale` from the user's primary conversation language. `i18n.locales` must contain complete versions for `en`, `zh-CN`, `ja`, and `ko`; all four must appear in the language menu. Every locale, including the default locale, must explicitly contain every reader-facing field: the header and verdict, aggregate method names and quality text, all three round titles and tasks, result descriptions, process-step titles and explanations, evidence labels, experiment findings, research titles and findings, benefits, tradeoffs, scenarios, recommendation, design basis, fairness explanation, and judgment rule. Never rely on untranslated root-data fallback for visible prose.
+
+Switching languages must make the complete HTML use the selected language. The only content intentionally left untranslated is raw evidence: commands, logs, model/tool output, input payloads, URLs, file paths, product names, model names, and other source records whose exact wording proves execution. Never expose a partially translated language option.
 
 Do not include secrets, cookies, authorization headers, private tokens, or unrelated user data. Redact sensitive values before writing evidence.
 
@@ -229,7 +233,7 @@ Do not duplicate the three task descriptions in the design block when the round 
 
 Each round comparison expands into side-by-side original/new timelines. Every timeline starts at `00:00` and shows only meaningful recorded events, not an invented event for every second. Attach expandable raw evidence to the step where it occurred: model calls, tool calls, commands, inputs, outputs, source links, errors, and retries. Keep raw evidence collapsed by default. If a step was not recorded, say “Not available”; never reconstruct it as fact.
 
-The report must initially show only the default language. Put the current language control in the top-right corner; clicking it opens a dropdown list. Changing the selection updates the complete report without network access. Do not display bilingual headings side by side.
+The report must initially show only the default language. Put the current language control in the top-right corner; clicking it opens a dropdown list containing English, Simplified Chinese, Japanese, and Korean. Changing the selection updates every reader-facing field without network access. Do not display bilingual headings side by side, and do not mix languages except for raw evidence and proper product or model names.
 
 The embedded execution evidence must contain separate baseline and candidate columns with:
 
@@ -255,9 +259,11 @@ Open or render `report.html` and check:
 - no secrets or private identifiers appear in the page.
 - the default language matches the user's conversation language;
 - the top-right dropdown opens, closes, marks the active language, and switches all translated narrative content;
+- English, Simplified Chinese, Japanese, and Korean are all present, and each selection leaves no untranslated reader-facing field from another locale;
 - the report declares the fixed format version and retains both numbered sections and their explanations;
 - raw evidence stays unchanged when the report language changes;
 - experiment findings, external research, and synthesis are visibly distinct;
+- external research was actually attempted and provides at least one reliable source, or records a concrete technical blocker;
 - scenarios are concrete rather than generic labels.
 
 Fix any defect before delivery.
@@ -293,3 +299,5 @@ The task is complete only when:
 - the HTML is generated and visually verified;
 - all three approved rounds appear, and every recorded invocation proof is attached to the execution step where it occurred;
 - the report includes analysis, a verdict, and the experiment's main limitation.
+- mandatory external research was attempted and its source or concrete blocker is recorded;
+- all four required report languages pass the completeness check.

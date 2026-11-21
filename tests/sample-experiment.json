@@ -158,6 +158,7 @@
       "Token and cost data were not available from the host."
     ],
     "research": {
+      "attempted": true,
       "status": "completed",
       "summary": "Official project information was used only to describe likely workload fit; it does not turn this fixture into a product benchmark.",
       "sources": [
@@ -207,7 +208,44 @@
   "i18n": {
     "default_locale": "en",
     "locales": {
-      "en": {"label": "English", "direction": "ltr", "content": {}},
+      "en": {
+        "label": "English",
+        "direction": "ltr",
+        "content": {
+          "title": "Sample capability value test",
+          "task": "Extract the title, publication date, and three key points from the same public article.",
+          "primary_question": "Can the candidate reduce end-to-end time without reducing result quality?",
+          "verdict": {"label": "Inconclusive — more evidence is required", "summary": "The candidate completed all three sample tasks with equivalent quality and lower average elapsed time, but these fixtures are not a general benchmark.", "limitation": "Three demonstration fixtures per method; the numbers below are sample data, not a claim about a real product."},
+          "baseline": {"name": "Current method", "version": "sample configuration", "quality": {"label": "Requirements met", "summary": "Returned all required fields and three supported key points."}, "steps": [{"title": "Started baseline", "detail": "Submitted the shared URL and extraction requirements."}, {"title": "Loaded article", "detail": "Retrieved and parsed the public page."}, {"title": "Completed output", "detail": "Returned the requested structured summary."}], "result_summary": "Complete structured extraction with the requested title, date, and three key points.", "evidence": [{"label": "Invocation record"}, {"label": "Completion log"}]},
+          "candidate": {"name": "Candidate capability", "version": "sample configuration", "quality": {"label": "Requirements met", "summary": "Returned all required fields and three supported key points."}, "steps": [{"title": "Started candidate", "detail": "Submitted the same URL and extraction requirements."}, {"title": "Loaded article", "detail": "Retrieved and parsed the public page through the candidate."}, {"title": "Completed output", "detail": "Returned the requested structured summary."}], "result_summary": "Complete structured extraction with the requested title, date, and three key points.", "evidence": [{"label": "Candidate invocation"}, {"label": "Completion log"}]},
+          "design": {"basis": "The three samples represent recurring public-page extraction work: a news article, a documentation page, and a project README.", "fairness": "Both methods received the same page, requested fields, output format, stopping rule, and quality requirements in each round.", "judgment_rule": "A round passes when every requested field is present and supported by the source page; elapsed time runs from submission to a deliverable answer."},
+          "rounds": [
+            {
+              "title": "Public news article", "task": "Extract the title, publication date, and three supported key points.",
+              "baseline": {"name": "Current method", "version": "sample configuration", "quality": {"label": "Requirements met", "summary": "All requested fields were correct and complete."}, "steps": [{"title": "Received task", "detail": "Submitted the shared article and extraction requirements.", "evidence": [{"label": "Shared input"}]}, {"title": "Loaded article", "detail": "Retrieved and parsed the public page.", "evidence": [{"label": "Baseline invocation"}]}, {"title": "Returned result", "detail": "Produced the requested structured extraction.", "evidence": [{"label": "Completion log"}]}], "result_summary": "Complete extraction in 14.2 seconds.", "evidence": [{"label": "Round status"}]},
+              "candidate": {"name": "Candidate capability", "version": "sample configuration", "quality": {"label": "Requirements met", "summary": "All requested fields were correct and complete."}, "steps": [{"title": "Received the same task", "detail": "Submitted the identical article and requirements.", "evidence": [{"label": "Shared input"}]}, {"title": "Invoked candidate", "detail": "Called the candidate extraction capability.", "evidence": [{"label": "Candidate invocation"}]}, {"title": "Returned result", "detail": "Produced the requested structured extraction.", "evidence": [{"label": "Completion log"}]}], "result_summary": "Complete extraction in 8.1 seconds.", "evidence": [{"label": "Round status"}]}
+            },
+            {
+              "title": "Product documentation page", "task": "Extract the product name, two supported features, and one stated limitation.",
+              "baseline": {"name": "Current method", "version": "sample configuration", "quality": {"label": "Requirements met", "summary": "All requested fields were supported by the page."}, "steps": [{"title": "Received task", "detail": "Submitted the documentation page and required fields.", "evidence": [{"label": "Shared input"}]}, {"title": "Read documentation", "detail": "Located feature and limitation sections.", "evidence": [{"label": "Baseline invocation"}]}, {"title": "Returned result", "detail": "Produced the requested fields.", "evidence": [{"label": "Completion log"}]}], "result_summary": "Complete extraction in 16.4 seconds.", "evidence": [{"label": "Round status"}]},
+              "candidate": {"name": "Candidate capability", "version": "sample configuration", "quality": {"label": "Requirements met", "summary": "All requested fields were supported by the page."}, "steps": [{"title": "Received the same task", "detail": "Submitted the identical documentation page and fields.", "evidence": [{"label": "Shared input"}]}, {"title": "Invoked candidate", "detail": "Called the candidate extraction capability.", "evidence": [{"label": "Candidate invocation"}]}, {"title": "Returned result", "detail": "Produced the requested fields.", "evidence": [{"label": "Completion log"}]}], "result_summary": "Complete extraction in 9.3 seconds.", "evidence": [{"label": "Round status"}]}
+            },
+            {
+              "title": "Project README", "task": "Extract the project purpose, installation command, and two usage constraints.",
+              "baseline": {"name": "Current method", "version": "sample configuration", "quality": {"label": "Requirements met", "summary": "All requested fields were found and supported."}, "steps": [{"title": "Received task", "detail": "Submitted the README and extraction requirements.", "evidence": [{"label": "Shared input"}]}, {"title": "Read README", "detail": "Located purpose, installation, and constraint sections.", "evidence": [{"label": "Baseline invocation"}]}, {"title": "Returned result", "detail": "Produced the requested fields.", "evidence": [{"label": "Completion log"}]}], "result_summary": "Complete extraction in 13.8 seconds.", "evidence": [{"label": "Round status"}]},
+              "candidate": {"name": "Candidate capability", "version": "sample configuration", "quality": {"label": "Requirements met", "summary": "All requested fields were found and supported."}, "steps": [{"title": "Received the same task", "detail": "Submitted the identical README and requirements.", "evidence": [{"label": "Shared input"}]}, {"title": "Invoked candidate", "detail": "Called the candidate extraction capability.", "evidence": [{"label": "Candidate invocation"}]}, {"title": "Returned result", "detail": "Produced the requested fields.", "evidence": [{"label": "Completion log"}]}], "result_summary": "Complete extraction in 8.7 seconds.", "evidence": [{"label": "Round status"}]}
+            }
+          ],
+          "analysis": {
+            "experiment_findings": ["Both methods met the same extraction requirements in this fixture.", "The candidate completed the task in 8.1 seconds versus 14.2 seconds for the current method.", "Token and cost data were not available from the host."],
+            "research": {"summary": "Official project information was used only to describe likely workload fit; it does not turn this fixture into a product benchmark.", "sources": [{"title": "Lightpanda Browser", "publisher": "Lightpanda", "finding": "The project presents Lightpanda as a headless browser designed for AI agents and automation."}]},
+            "benefits": ["Equivalent fixture output in less end-to-end time.", "The candidate invocation is represented by separate tool evidence."],
+            "tradeoffs": ["The fixture does not test authenticated, visual, or highly interactive pages.", "Token and cost data were not available."],
+            "scenarios": [{"title": "Batch extraction from public, text-heavy articles", "audience": "A researcher or content operator", "task": "Collect titles, dates, and key points from many public articles", "environment": "Pages expose readable text without login or visual interaction", "reason": "The sample suggests a time advantage, while the official project positioning matches headless automation; a real multi-page run is still required."}, {"title": "Tasks requiring a visible, authenticated browser", "audience": "A user completing account or checkout steps", "task": "Sign in, inspect visual state, and submit a consequential action", "environment": "The workflow needs user observation, authentication, or visual confirmation", "reason": "This experiment did not test those requirements, and a headless automation tool should not replace the visible browser without a dedicated test."}],
+            "recommendation": "Run the same approved design with real tools and evidence on a representative public-page workload before adopting the candidate."
+          }
+        }
+      },
       "zh-CN": {
         "label": "简体中文",
         "direction": "ltr",
@@ -215,11 +253,7 @@
           "title": "新能力价值测试示例",
           "task": "从同一篇公开文章中提取标题、发布日期和三个要点。",
           "primary_question": "新能力能否在不降低结果质量的情况下减少任务完成耗时？",
-          "verdict": {
-            "label": "证据不足，需要补充实验",
-            "summary": "新能力以相同质量和更短平均耗时完成了三轮示例任务，但这些样例不能构成普遍结论。",
-            "limitation": "每种方法包含三轮演示样例；以下数字是示例数据，不代表任何真实产品。"
-          },
+          "verdict": {"label": "证据不足，需要补充实验", "summary": "新能力以相同质量和更短平均耗时完成了三轮示例任务，但这些样例不能构成普遍结论。", "limitation": "每种方法包含三轮演示样例；以下数字是示例数据，不代表任何真实产品。"},
           "baseline": {
             "name": "当前方法",
             "version": "示例配置",
@@ -229,7 +263,8 @@
               {"title": "加载文章", "detail": "获取并解析公开页面。"},
               {"title": "完成输出", "detail": "返回要求的结构化摘要。"}
             ],
-            "result_summary": "完整提取了标题、日期和三个要点。"
+            "result_summary": "完整提取了标题、日期和三个要点。",
+            "evidence": [{"label": "调用记录"}, {"label": "完成日志"}]
           },
           "candidate": {
             "name": "新能力方法",
@@ -240,11 +275,30 @@
               {"title": "加载文章", "detail": "通过新能力获取并解析公开页面。"},
               {"title": "完成输出", "detail": "返回要求的结构化摘要。"}
             ],
-            "result_summary": "完整提取了标题、日期和三个要点。"
+            "result_summary": "完整提取了标题、日期和三个要点。",
+            "evidence": [{"label": "新能力调用"}, {"label": "完成日志"}]
           },
+          "design": {"basis": "三个样本代表常见的公开网页信息提取工作：新闻文章、产品文档和项目说明。", "fairness": "每轮中，两种方法收到相同页面、字段要求、输出格式、停止条件和质量要求。", "judgment_rule": "每个要求字段都存在且能由源页面支持时视为通过；耗时从提交任务计算到得到可交付答案。"},
+          "rounds": [
+            {
+              "title": "公开新闻文章", "task": "提取标题、发布日期和三个有依据的要点。",
+              "baseline": {"name": "当前方法", "version": "示例配置", "quality": {"label": "满足要求", "summary": "所有字段正确且完整。"}, "steps": [{"title": "接收任务", "detail": "提交共同文章和提取要求。", "evidence": [{"label": "共同输入"}]}, {"title": "加载文章", "detail": "获取并解析公开页面。", "evidence": [{"label": "当前方法调用"}]}, {"title": "返回结果", "detail": "输出要求的结构化内容。", "evidence": [{"label": "完成日志"}]}], "result_summary": "在 14.2 秒内完成提取。", "evidence": [{"label": "本轮状态"}]},
+              "candidate": {"name": "新能力方法", "version": "示例配置", "quality": {"label": "满足要求", "summary": "所有字段正确且完整。"}, "steps": [{"title": "接收相同任务", "detail": "提交完全相同的文章和要求。", "evidence": [{"label": "共同输入"}]}, {"title": "调用新能力", "detail": "调用新能力完成信息提取。", "evidence": [{"label": "新能力调用"}]}, {"title": "返回结果", "detail": "输出要求的结构化内容。", "evidence": [{"label": "完成日志"}]}], "result_summary": "在 8.1 秒内完成提取。", "evidence": [{"label": "本轮状态"}]}
+            },
+            {
+              "title": "产品文档页面", "task": "提取产品名称、两个支持的功能和一个明确限制。",
+              "baseline": {"name": "当前方法", "version": "示例配置", "quality": {"label": "满足要求", "summary": "所有字段都有页面依据。"}, "steps": [{"title": "接收任务", "detail": "提交产品文档和字段要求。", "evidence": [{"label": "共同输入"}]}, {"title": "阅读文档", "detail": "定位功能和限制部分。", "evidence": [{"label": "当前方法调用"}]}, {"title": "返回结果", "detail": "输出要求的字段。", "evidence": [{"label": "完成日志"}]}], "result_summary": "在 16.4 秒内完成提取。", "evidence": [{"label": "本轮状态"}]},
+              "candidate": {"name": "新能力方法", "version": "示例配置", "quality": {"label": "满足要求", "summary": "所有字段都有页面依据。"}, "steps": [{"title": "接收相同任务", "detail": "提交完全相同的文档和字段。", "evidence": [{"label": "共同输入"}]}, {"title": "调用新能力", "detail": "调用新能力完成信息提取。", "evidence": [{"label": "新能力调用"}]}, {"title": "返回结果", "detail": "输出要求的字段。", "evidence": [{"label": "完成日志"}]}], "result_summary": "在 9.3 秒内完成提取。", "evidence": [{"label": "本轮状态"}]}
+            },
+            {
+              "title": "项目说明文件", "task": "提取项目用途、安装命令和两个使用限制。",
+              "baseline": {"name": "当前方法", "version": "示例配置", "quality": {"label": "满足要求", "summary": "所有字段都已找到且有依据。"}, "steps": [{"title": "接收任务", "detail": "提交说明文件和提取要求。", "evidence": [{"label": "共同输入"}]}, {"title": "阅读说明文件", "detail": "定位用途、安装和限制部分。", "evidence": [{"label": "当前方法调用"}]}, {"title": "返回结果", "detail": "输出要求的字段。", "evidence": [{"label": "完成日志"}]}], "result_summary": "在 13.8 秒内完成提取。", "evidence": [{"label": "本轮状态"}]},
+              "candidate": {"name": "新能力方法", "version": "示例配置", "quality": {"label": "满足要求", "summary": "所有字段都已找到且有依据。"}, "steps": [{"title": "接收相同任务", "detail": "提交完全相同的说明文件和要求。", "evidence": [{"label": "共同输入"}]}, {"title": "调用新能力", "detail": "调用新能力完成信息提取。", "evidence": [{"label": "新能力调用"}]}, {"title": "返回结果", "detail": "输出要求的字段。", "evidence": [{"label": "完成日志"}]}], "result_summary": "在 8.7 秒内完成提取。", "evidence": [{"label": "本轮状态"}]}
+            }
+          ],
           "analysis": {
             "experiment_findings": ["两种方法都满足了相同的提取要求。", "新能力耗时 8.1 秒，当前方法耗时 14.2 秒。", "宿主没有提供 Token 和成本数据。"],
-            "research": {"summary": "官方资料只用于描述可能适合的工作负载，不能把演示数据变成产品基准。", "sources": [{"title": "Lightpanda 浏览器", "finding": "项目将 Lightpanda 定位为面向 AI Agent 和自动化的无头浏览器。"}]},
+            "research": {"summary": "官方资料只用于描述可能适合的工作负载，不能把演示数据变成产品基准。", "sources": [{"title": "Lightpanda 浏览器", "publisher": "Lightpanda", "finding": "项目将 Lightpanda 定位为面向 AI Agent 和自动化的无头浏览器。"}]},
             "benefits": ["在示例中以相同质量缩短了任务完成耗时。", "独立工具证据可以验证新能力确实被调用。"],
             "tradeoffs": ["示例没有测试登录、视觉或复杂交互页面。", "Token 和成本数据不可用。"],
             "scenarios": [
@@ -263,11 +317,29 @@
           "task": "同じ公開記事からタイトル、公開日、3つの要点を抽出する。",
           "primary_question": "結果品質を落とさずに完了時間を短縮できるか。",
           "verdict": {"label": "証拠不足 — 追加実験が必要", "summary": "同等品質かつ短い平均時間で3回のサンプルを完了しましたが、一般的なベンチマークではありません。", "limitation": "各方式3回のデモデータであり、実製品の主張ではありません。"},
-          "baseline": {"name": "現在の方式", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "必要な項目をすべて返しました。"}, "steps": [{"title": "現在方式を開始", "detail": "共通URLと抽出条件を送信しました。"}, {"title": "記事を読み込み", "detail": "公開ページを取得して解析しました。"}, {"title": "出力を完了", "detail": "指定形式の要約を返しました。"}], "result_summary": "タイトル、日付、3つの要点を完全に抽出しました。"},
-          "candidate": {"name": "新しい能力", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "必要な項目をすべて返しました。"}, "steps": [{"title": "新方式を開始", "detail": "同じURLと抽出条件を送信しました。"}, {"title": "記事を読み込み", "detail": "新能力で公開ページを取得して解析しました。"}, {"title": "出力を完了", "detail": "指定形式の要約を返しました。"}], "result_summary": "タイトル、日付、3つの要点を完全に抽出しました。"},
+          "baseline": {"name": "現在の方式", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "必要な項目をすべて返しました。"}, "steps": [{"title": "現在方式を開始", "detail": "共通URLと抽出条件を送信しました。"}, {"title": "記事を読み込み", "detail": "公開ページを取得して解析しました。"}, {"title": "出力を完了", "detail": "指定形式の要約を返しました。"}], "result_summary": "タイトル、日付、3つの要点を完全に抽出しました。", "evidence": [{"label": "呼び出し記録"}, {"label": "完了ログ"}]},
+          "candidate": {"name": "新しい能力", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "必要な項目をすべて返しました。"}, "steps": [{"title": "新方式を開始", "detail": "同じURLと抽出条件を送信しました。"}, {"title": "記事を読み込み", "detail": "新能力で公開ページを取得して解析しました。"}, {"title": "出力を完了", "detail": "指定形式の要約を返しました。"}], "result_summary": "タイトル、日付、3つの要点を完全に抽出しました。", "evidence": [{"label": "新能力の呼び出し"}, {"label": "完了ログ"}]},
+          "design": {"basis": "3つのサンプルは、ニュース記事、製品ドキュメント、プロジェクトREADMEという一般的な公開ページ抽出作業を表します。", "fairness": "各回で両方式に同じページ、項目、出力形式、停止条件、品質要件を与えました。", "judgment_rule": "要求項目がすべて存在し、元ページで裏付けられれば合格です。時間は送信から納品可能な回答までを測ります。"},
+          "rounds": [
+            {
+              "title": "公開ニュース記事", "task": "タイトル、公開日、根拠のある3つの要点を抽出する。",
+              "baseline": {"name": "現在の方式", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "すべての項目が正確で完全でした。"}, "steps": [{"title": "タスクを受信", "detail": "共通記事と抽出条件を送信しました。", "evidence": [{"label": "共通入力"}]}, {"title": "記事を読み込み", "detail": "公開ページを取得して解析しました。", "evidence": [{"label": "現在方式の呼び出し"}]}, {"title": "結果を返却", "detail": "指定された構造化結果を返しました。", "evidence": [{"label": "完了ログ"}]}], "result_summary": "14.2秒で抽出を完了しました。", "evidence": [{"label": "実行状態"}]},
+              "candidate": {"name": "新しい能力", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "すべての項目が正確で完全でした。"}, "steps": [{"title": "同じタスクを受信", "detail": "同一の記事と条件を送信しました。", "evidence": [{"label": "共通入力"}]}, {"title": "新能力を呼び出し", "detail": "新能力で情報を抽出しました。", "evidence": [{"label": "新能力の呼び出し"}]}, {"title": "結果を返却", "detail": "指定された構造化結果を返しました。", "evidence": [{"label": "完了ログ"}]}], "result_summary": "8.1秒で抽出を完了しました。", "evidence": [{"label": "実行状態"}]}
+            },
+            {
+              "title": "製品ドキュメント", "task": "製品名、対応機能2つ、明示された制約1つを抽出する。",
+              "baseline": {"name": "現在の方式", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "すべての項目がページで裏付けられました。"}, "steps": [{"title": "タスクを受信", "detail": "ドキュメントと項目を送信しました。", "evidence": [{"label": "共通入力"}]}, {"title": "文書を確認", "detail": "機能と制約の箇所を特定しました。", "evidence": [{"label": "現在方式の呼び出し"}]}, {"title": "結果を返却", "detail": "要求された項目を返しました。", "evidence": [{"label": "完了ログ"}]}], "result_summary": "16.4秒で抽出を完了しました。", "evidence": [{"label": "実行状態"}]},
+              "candidate": {"name": "新しい能力", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "すべての項目がページで裏付けられました。"}, "steps": [{"title": "同じタスクを受信", "detail": "同一の文書と項目を送信しました。", "evidence": [{"label": "共通入力"}]}, {"title": "新能力を呼び出し", "detail": "新能力で情報を抽出しました。", "evidence": [{"label": "新能力の呼び出し"}]}, {"title": "結果を返却", "detail": "要求された項目を返しました。", "evidence": [{"label": "完了ログ"}]}], "result_summary": "9.3秒で抽出を完了しました。", "evidence": [{"label": "実行状態"}]}
+            },
+            {
+              "title": "プロジェクトREADME", "task": "目的、インストールコマンド、利用上の制約2つを抽出する。",
+              "baseline": {"name": "現在の方式", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "すべての項目を確認できました。"}, "steps": [{"title": "タスクを受信", "detail": "READMEと抽出条件を送信しました。", "evidence": [{"label": "共通入力"}]}, {"title": "READMEを確認", "detail": "目的、導入、制約の箇所を特定しました。", "evidence": [{"label": "現在方式の呼び出し"}]}, {"title": "結果を返却", "detail": "要求された項目を返しました。", "evidence": [{"label": "完了ログ"}]}], "result_summary": "13.8秒で抽出を完了しました。", "evidence": [{"label": "実行状態"}]},
+              "candidate": {"name": "新しい能力", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "すべての項目を確認できました。"}, "steps": [{"title": "同じタスクを受信", "detail": "同一のREADMEと条件を送信しました。", "evidence": [{"label": "共通入力"}]}, {"title": "新能力を呼び出し", "detail": "新能力で情報を抽出しました。", "evidence": [{"label": "新能力の呼び出し"}]}, {"title": "結果を返却", "detail": "要求された項目を返しました。", "evidence": [{"label": "完了ログ"}]}], "result_summary": "8.7秒で抽出を完了しました。", "evidence": [{"label": "実行状態"}]}
+            }
+          ],
           "analysis": {
             "experiment_findings": ["両方式が同じ要件を満たしました。", "新方式は8.1秒、現在方式は14.2秒でした。", "Tokenとコストは取得できませんでした。"],
-            "research": {"summary": "公式情報は用途の背景にのみ使い、製品ベンチマークとはしません。", "sources": [{"title": "Lightpanda Browser", "finding": "Lightpanda は AI Agent と自動化向けのヘッドレスブラウザとして紹介されています。"}]},
+            "research": {"summary": "公式情報は用途の背景にのみ使い、製品ベンチマークとはしません。", "sources": [{"title": "Lightpanda Browser", "publisher": "Lightpanda", "finding": "Lightpanda は AI Agent と自動化向けのヘッドレスブラウザとして紹介されています。"}]},
             "benefits": ["同等品質で完了時間が短縮しました。", "独立したツール記録で呼び出しを確認できます。"],
             "tradeoffs": ["認証や視覚操作はテストしていません。", "Tokenとコストは取得できませんでした。"],
             "scenarios": [
@@ -286,11 +358,29 @@
           "task": "같은 공개 기사에서 제목, 게시일, 세 가지 핵심 내용을 추출합니다.",
           "primary_question": "결과 품질을 낮추지 않고 완료 시간을 줄일 수 있는가?",
           "verdict": {"label": "증거 부족 — 추가 실험 필요", "summary": "같은 품질과 더 짧은 평균 시간으로 세 가지 샘플을 완료했지만 일반적인 벤치마크는 아닙니다.", "limitation": "각 방식의 세 차례 데모 데이터이며 실제 제품에 대한 주장이 아닙니다."},
-          "baseline": {"name": "현재 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "필요한 항목을 모두 반환했습니다."}, "steps": [{"title": "현재 방식 시작", "detail": "공통 URL과 추출 요구를 제출했습니다."}, {"title": "기사 불러오기", "detail": "공개 페이지를 가져와 분석했습니다."}, {"title": "출력 완료", "detail": "요청한 구조화 요약을 반환했습니다."}], "result_summary": "제목, 날짜, 세 가지 핵심 내용을 모두 추출했습니다."},
-          "candidate": {"name": "새 기능 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "필요한 항목을 모두 반환했습니다."}, "steps": [{"title": "새 방식 시작", "detail": "같은 URL과 추출 요구를 제출했습니다."}, {"title": "기사 불러오기", "detail": "새 기능으로 공개 페이지를 가져와 분석했습니다."}, {"title": "출력 완료", "detail": "요청한 구조화 요약을 반환했습니다."}], "result_summary": "제목, 날짜, 세 가지 핵심 내용을 모두 추출했습니다."},
+          "baseline": {"name": "현재 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "필요한 항목을 모두 반환했습니다."}, "steps": [{"title": "현재 방식 시작", "detail": "공통 URL과 추출 요구를 제출했습니다."}, {"title": "기사 불러오기", "detail": "공개 페이지를 가져와 분석했습니다."}, {"title": "출력 완료", "detail": "요청한 구조화 요약을 반환했습니다."}], "result_summary": "제목, 날짜, 세 가지 핵심 내용을 모두 추출했습니다.", "evidence": [{"label": "호출 기록"}, {"label": "완료 로그"}]},
+          "candidate": {"name": "새 기능 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "필요한 항목을 모두 반환했습니다."}, "steps": [{"title": "새 방식 시작", "detail": "같은 URL과 추출 요구를 제출했습니다."}, {"title": "기사 불러오기", "detail": "새 기능으로 공개 페이지를 가져와 분석했습니다."}, {"title": "출력 완료", "detail": "요청한 구조화 요약을 반환했습니다."}], "result_summary": "제목, 날짜, 세 가지 핵심 내용을 모두 추출했습니다.", "evidence": [{"label": "새 기능 호출"}, {"label": "완료 로그"}]},
+          "design": {"basis": "세 가지 샘플은 뉴스 기사, 제품 문서, 프로젝트 README라는 일반적인 공개 페이지 추출 작업을 대표합니다.", "fairness": "각 회차에서 두 방식에 같은 페이지, 필드, 출력 형식, 종료 조건, 품질 요구를 제공했습니다.", "judgment_rule": "요청한 모든 필드가 존재하고 원문으로 확인되면 통과하며, 시간은 제출부터 전달 가능한 답변까지 측정합니다."},
+          "rounds": [
+            {
+              "title": "공개 뉴스 기사", "task": "제목, 게시일, 근거가 있는 핵심 내용 세 가지를 추출합니다.",
+              "baseline": {"name": "현재 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "모든 필드가 정확하고 완전했습니다."}, "steps": [{"title": "작업 수신", "detail": "공통 기사와 추출 요구를 제출했습니다.", "evidence": [{"label": "공통 입력"}]}, {"title": "기사 불러오기", "detail": "공개 페이지를 가져와 분석했습니다.", "evidence": [{"label": "현재 방식 호출"}]}, {"title": "결과 반환", "detail": "요청한 구조화 결과를 반환했습니다.", "evidence": [{"label": "완료 로그"}]}], "result_summary": "14.2초 만에 추출을 완료했습니다.", "evidence": [{"label": "회차 상태"}]},
+              "candidate": {"name": "새 기능 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "모든 필드가 정확하고 완전했습니다."}, "steps": [{"title": "동일 작업 수신", "detail": "동일한 기사와 요구를 제출했습니다.", "evidence": [{"label": "공통 입력"}]}, {"title": "새 기능 호출", "detail": "새 기능으로 정보를 추출했습니다.", "evidence": [{"label": "새 기능 호출"}]}, {"title": "결과 반환", "detail": "요청한 구조화 결과를 반환했습니다.", "evidence": [{"label": "완료 로그"}]}], "result_summary": "8.1초 만에 추출을 완료했습니다.", "evidence": [{"label": "회차 상태"}]}
+            },
+            {
+              "title": "제품 문서 페이지", "task": "제품명, 지원 기능 두 가지, 명시된 제한 한 가지를 추출합니다.",
+              "baseline": {"name": "현재 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "모든 필드가 페이지 내용으로 확인되었습니다."}, "steps": [{"title": "작업 수신", "detail": "문서와 필드 요구를 제출했습니다.", "evidence": [{"label": "공통 입력"}]}, {"title": "문서 읽기", "detail": "기능과 제한 부분을 찾았습니다.", "evidence": [{"label": "현재 방식 호출"}]}, {"title": "결과 반환", "detail": "요청한 필드를 반환했습니다.", "evidence": [{"label": "완료 로그"}]}], "result_summary": "16.4초 만에 추출을 완료했습니다.", "evidence": [{"label": "회차 상태"}]},
+              "candidate": {"name": "새 기능 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "모든 필드가 페이지 내용으로 확인되었습니다."}, "steps": [{"title": "동일 작업 수신", "detail": "동일한 문서와 필드를 제출했습니다.", "evidence": [{"label": "공통 입력"}]}, {"title": "새 기능 호출", "detail": "새 기능으로 정보를 추출했습니다.", "evidence": [{"label": "새 기능 호출"}]}, {"title": "결과 반환", "detail": "요청한 필드를 반환했습니다.", "evidence": [{"label": "완료 로그"}]}], "result_summary": "9.3초 만에 추출을 완료했습니다.", "evidence": [{"label": "회차 상태"}]}
+            },
+            {
+              "title": "프로젝트 README", "task": "프로젝트 목적, 설치 명령, 사용 제한 두 가지를 추출합니다.",
+              "baseline": {"name": "현재 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "모든 필드를 찾고 확인했습니다."}, "steps": [{"title": "작업 수신", "detail": "README와 추출 요구를 제출했습니다.", "evidence": [{"label": "공통 입력"}]}, {"title": "README 읽기", "detail": "목적, 설치, 제한 부분을 찾았습니다.", "evidence": [{"label": "현재 방식 호출"}]}, {"title": "결과 반환", "detail": "요청한 필드를 반환했습니다.", "evidence": [{"label": "완료 로그"}]}], "result_summary": "13.8초 만에 추출을 완료했습니다.", "evidence": [{"label": "회차 상태"}]},
+              "candidate": {"name": "새 기능 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "모든 필드를 찾고 확인했습니다."}, "steps": [{"title": "동일 작업 수신", "detail": "동일한 README와 요구를 제출했습니다.", "evidence": [{"label": "공통 입력"}]}, {"title": "새 기능 호출", "detail": "새 기능으로 정보를 추출했습니다.", "evidence": [{"label": "새 기능 호출"}]}, {"title": "결과 반환", "detail": "요청한 필드를 반환했습니다.", "evidence": [{"label": "완료 로그"}]}], "result_summary": "8.7초 만에 추출을 완료했습니다.", "evidence": [{"label": "회차 상태"}]}
+            }
+          ],
           "analysis": {
             "experiment_findings": ["두 방식 모두 같은 요구 사항을 충족했습니다.", "새 방식은 8.1초, 현재 방식은 14.2초가 걸렸습니다.", "Token과 비용 데이터는 제공되지 않았습니다."],
-            "research": {"summary": "공식 정보는 적합한 작업 배경에만 사용하며 제품 벤치마크로 취급하지 않습니다.", "sources": [{"title": "Lightpanda Browser", "finding": "Lightpanda는 AI Agent와 자동화를 위한 헤드리스 브라우저로 소개됩니다."}]},
+            "research": {"summary": "공식 정보는 적합한 작업 배경에만 사용하며 제품 벤치마크로 취급하지 않습니다.", "sources": [{"title": "Lightpanda Browser", "publisher": "Lightpanda", "finding": "Lightpanda는 AI Agent와 자동화를 위한 헤드리스 브라우저로 소개됩니다."}]},
             "benefits": ["같은 품질로 완료 시간을 줄였습니다.", "별도 도구 기록으로 실제 호출을 검증할 수 있습니다."],
             "tradeoffs": ["인증이나 시각적 작업은 테스트하지 않았습니다.", "Token과 비용 데이터는 제공되지 않았습니다."],
             "scenarios": [

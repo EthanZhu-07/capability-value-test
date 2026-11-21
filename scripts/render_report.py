@@ -16,7 +16,8 @@ from urllib.parse import urlparse
 
 VERDICTS = {"adopt", "do_not_adopt", "inconclusive"}
 QUALITY_STATES = {"met", "partial", "failed"}
-RESEARCH_STATES = {"completed", "unavailable"}
+RESEARCH_STATES = {"completed", "blocked"}
+REQUIRED_LOCALES = {"en", "zh-CN", "ja", "ko"}
 SCENARIO_RECOMMENDATIONS = {"use", "avoid", "retest"}
 SCENARIO_BASES = {"experiment", "research", "combined"}
 CONFIDENCE_LEVELS = {"high", "medium", "low"}
@@ -130,6 +131,8 @@ def validate_analysis(data: Any) -> dict[str, Any]:
     require_string(analysis, "recommendation", "root.analysis")
 
     research = require_mapping(analysis.get("research"), "root.analysis.research")
+    if research.get("attempted") is not True:
+        raise ValidationError("root.analysis.research.attempted must be true")
     research_status = require_string(research, "status", "root.analysis.research")
     if research_status not in RESEARCH_STATES:
         raise ValidationError(
@@ -144,6 +147,12 @@ def validate_analysis(data: Any) -> dict[str, Any]:
         raise ValidationError(
             "root.analysis.research.sources must not be empty when research completed"
         )
+    if research_status == "blocked":
+        require_string(research, "blocker", "root.analysis.research")
+        if sources:
+            raise ValidationError(
+                "root.analysis.research.sources must be empty when research is blocked"
+            )
 
     source_ids: set[str] = set()
     for index, source_value in enumerate(sources):
@@ -198,12 +207,120 @@ def validate_analysis(data: Any) -> dict[str, Any]:
     return analysis
 
 
-def validate_i18n(data: Any) -> dict[str, Any]:
+def require_localized_arm(overlay_value: Any, base_value: Any, path: str) -> None:
+    overlay = require_mapping(overlay_value, path)
+    base = require_mapping(base_value, f"{path} (base)")
+    for key in ("name", "version", "result_summary"):
+        require_string(overlay, key, path)
+    quality = require_mapping(overlay.get("quality"), f"{path}.quality")
+    for key in ("label", "summary"):
+        require_string(quality, key, f"{path}.quality")
+
+    overlay_steps = overlay.get("steps")
+    base_steps = base.get("steps")
+    if not isinstance(overlay_steps, list) or len(overlay_steps) != len(base_steps):
+        raise ValidationError(f"{path}.steps must translate every base step")
+    for index, (step_value, base_step_value) in enumerate(zip(overlay_steps, base_steps)):
+        step_path = f"{path}.steps[{index}]"
+        step = require_mapping(step_value, step_path)
+        base_step = require_mapping(base_step_value, f"{step_path} (base)")
+        for key in ("title", "detail"):
+            require_string(step, key, step_path)
+        overlay_evidence = step.get("evidence", [])
+        base_evidence = base_step.get("evidence", [])
+        if not isinstance(overlay_evidence, list) or len(overlay_evidence) != len(base_evidence):
+            raise ValidationError(f"{step_path}.evidence must translate every evidence label")
+        for evidence_index, evidence_value in enumerate(overlay_evidence):
+            evidence_path = f"{step_path}.evidence[{evidence_index}]"
+            evidence = require_mapping(evidence_value, evidence_path)
+            require_string(evidence, "label", evidence_path)
+
+    overlay_evidence = overlay.get("evidence", [])
+    base_evidence = base.get("evidence", [])
+    if not isinstance(overlay_evidence, list) or len(overlay_evidence) != len(base_evidence):
+        raise ValidationError(f"{path}.evidence must translate every evidence label")
+    for index, evidence_value in enumerate(overlay_evidence):
+        evidence_path = f"{path}.evidence[{index}]"
+        evidence = require_mapping(evidence_value, evidence_path)
+        require_string(evidence, "label", evidence_path)
+
+
+def validate_complete_locale_content(content_value: Any, root: dict[str, Any], path: str) -> None:
+    content = require_mapping(content_value, path)
+    for key in ("title", "task", "primary_question"):
+        require_string(content, key, path)
+
+    verdict = require_mapping(content.get("verdict"), f"{path}.verdict")
+    for key in ("label", "summary", "limitation"):
+        require_string(verdict, key, f"{path}.verdict")
+
+    require_localized_arm(content.get("baseline"), root["baseline"], f"{path}.baseline")
+    require_localized_arm(content.get("candidate"), root["candidate"], f"{path}.candidate")
+
+    design = require_mapping(content.get("design"), f"{path}.design")
+    for key in ("basis", "fairness", "judgment_rule"):
+        require_string(design, key, f"{path}.design")
+
+    overlay_rounds = content.get("rounds")
+    base_rounds = root["rounds"]
+    if not isinstance(overlay_rounds, list) or len(overlay_rounds) != len(base_rounds):
+        raise ValidationError(f"{path}.rounds must translate all three rounds")
+    for index, (round_value, base_round_value) in enumerate(zip(overlay_rounds, base_rounds)):
+        round_path = f"{path}.rounds[{index}]"
+        round_data = require_mapping(round_value, round_path)
+        base_round = require_mapping(base_round_value, f"{round_path} (base)")
+        for key in ("title", "task"):
+            require_string(round_data, key, round_path)
+        require_localized_arm(
+            round_data.get("baseline"), base_round["baseline"], f"{round_path}.baseline"
+        )
+        require_localized_arm(
+            round_data.get("candidate"), base_round["candidate"], f"{round_path}.candidate"
+        )
+
+    analysis = require_mapping(content.get("analysis"), f"{path}.analysis")
+    base_analysis = root["analysis"]
+    for key in ("experiment_findings", "benefits", "tradeoffs"):
+        values = require_string_list(analysis.get(key), f"{path}.analysis.{key}")
+        if len(values) != len(base_analysis[key]):
+            raise ValidationError(f"{path}.analysis.{key} must translate every item")
+    require_string(analysis, "recommendation", f"{path}.analysis")
+
+    research = require_mapping(analysis.get("research"), f"{path}.analysis.research")
+    require_string(research, "summary", f"{path}.analysis.research")
+    if base_analysis["research"]["status"] == "blocked":
+        require_string(research, "blocker", f"{path}.analysis.research")
+    overlay_sources = research.get("sources", [])
+    base_sources = base_analysis["research"]["sources"]
+    if not isinstance(overlay_sources, list) or len(overlay_sources) != len(base_sources):
+        raise ValidationError(f"{path}.analysis.research.sources must translate every source")
+    for index, source_value in enumerate(overlay_sources):
+        source_path = f"{path}.analysis.research.sources[{index}]"
+        source = require_mapping(source_value, source_path)
+        for key in ("title", "publisher", "finding"):
+            require_string(source, key, source_path)
+
+    overlay_scenarios = analysis.get("scenarios")
+    base_scenarios = base_analysis["scenarios"]
+    if not isinstance(overlay_scenarios, list) or len(overlay_scenarios) != len(base_scenarios):
+        raise ValidationError(f"{path}.analysis.scenarios must translate every scenario")
+    for index, scenario_value in enumerate(overlay_scenarios):
+        scenario_path = f"{path}.analysis.scenarios[{index}]"
+        scenario = require_mapping(scenario_value, scenario_path)
+        for key in ("title", "audience", "task", "environment", "reason"):
+            require_string(scenario, key, scenario_path)
+
+
+def validate_i18n(data: Any, root: dict[str, Any]) -> dict[str, Any]:
     i18n = require_mapping(data, "root.i18n")
     default_locale = require_string(i18n, "default_locale", "root.i18n")
     locales = require_mapping(i18n.get("locales"), "root.i18n.locales")
-    if len(locales) < 2:
-        raise ValidationError("root.i18n.locales must contain at least two languages")
+    missing_locales = sorted(REQUIRED_LOCALES - set(locales))
+    if missing_locales:
+        raise ValidationError(
+            "root.i18n.locales must include en, zh-CN, ja, and ko; missing: "
+            + ", ".join(missing_locales)
+        )
     if default_locale not in locales:
         raise ValidationError("root.i18n.default_locale must exist in root.i18n.locales")
     for code, locale_value in locales.items():
@@ -214,7 +331,7 @@ def validate_i18n(data: Any) -> dict[str, Any]:
         if direction not in {"ltr", "rtl"}:
             raise ValidationError(f"{locale_path}.direction must be ltr or rtl")
         content = locale.get("content", {})
-        require_mapping(content, f"{locale_path}.content")
+        validate_complete_locale_content(content, root, f"{locale_path}.content")
     return i18n
 
 
@@ -314,7 +431,7 @@ def validate(data: Any) -> dict[str, Any]:
         validate_arm(round_data.get("candidate"), f"{round_path}.candidate")
 
     validate_analysis(root.get("analysis"))
-    validate_i18n(root.get("i18n"))
+    validate_i18n(root.get("i18n"), root)
 
     return root
 
