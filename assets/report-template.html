@@ -97,9 +97,8 @@
       cursor: pointer;
     }
     .language-option:hover, .language-option[aria-current="true"] { background: var(--surface-2); }
-    .eyebrow { color: var(--muted); font-size: 13px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
     h1, h2, h3, p { margin-top: 0; }
-    h1 { max-width: 850px; margin: 10px 0 12px; padding-right: 120px; font-size: clamp(30px, 5vw, 52px); line-height: 1.08; }
+    h1 { max-width: 850px; margin: 0 0 12px; padding-right: 120px; font-size: clamp(30px, 5vw, 52px); line-height: 1.08; }
     h2 { margin-bottom: 8px; font-size: 25px; }
     h3 { margin-bottom: 6px; font-size: 18px; }
     .lede { max-width: 850px; color: var(--muted); font-size: 17px; }
@@ -131,6 +130,13 @@
     .delta { margin-top: 12px; color: var(--muted); font-size: 12px; }
     .delta.good { color: #047857; font-weight: 800; }
     .delta.bad { color: var(--danger); font-weight: 800; }
+    .subsection { margin-top: 28px; padding-top: 26px; border-top: 1px solid var(--line); }
+    .subsection-title { margin-bottom: 12px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+    table { width: 100%; min-width: 760px; border-collapse: collapse; }
+    th, td { padding: 13px 15px; text-align: start; vertical-align: top; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); background: #f8fafc; font-size: 12px; }
+    tr:last-child td { border-bottom: 0; }
     .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .arm { border: 1px solid var(--line); border-radius: 16px; padding: 20px; min-width: 0; }
     .arm.baseline { border-top: 5px solid var(--baseline); }
@@ -149,6 +155,14 @@
     .step-title { font-weight: 800; }
     .step-detail { color: var(--muted); font-size: 14px; }
     .result-box { margin-top: 20px; padding: 16px; border-radius: 12px; background: var(--surface-2); }
+    .process-round { margin-top: 12px; border: 1px solid var(--line); border-radius: 14px; background: #fbfcff; }
+    .process-round > summary { padding: 15px 17px; cursor: pointer; font-weight: 800; }
+    .process-round > .compare { padding: 0 16px 16px; }
+    .step-evidence { margin-top: 8px; border: 1px solid var(--line); border-radius: 9px; background: #f8fafc; }
+    .step-evidence summary { padding: 7px 10px; cursor: pointer; color: #1d4ed8; font-size: 12px; font-weight: 750; }
+    .step-evidence pre { margin: 0; padding: 11px; overflow: auto; border-radius: 0 0 8px 8px; color: #dbeafe; background: #0f172a; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .design-grid { display: grid; gap: 12px; }
+    .design-card { padding: 17px; border: 1px solid var(--line); border-radius: 13px; }
     .bars { margin-top: 18px; display: grid; gap: 13px; }
     .bar-row { display: grid; grid-template-columns: minmax(110px, 180px) 1fr 90px; gap: 12px; align-items: center; }
     .bar-track { height: 14px; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
@@ -174,11 +188,6 @@
     .scenario-line strong { color: var(--ink); }
     .recommendation { margin-top: 18px; padding: 18px; border-radius: 14px; background: #ecfdf5; border: 1px solid #a7f3d0; }
     .limitation { margin-top: 14px; padding: 16px; border-radius: 12px; background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
-    .audit { background: #101827; color: #e5edf8; border-color: #263246; }
-    .audit .section-head p, .audit .arm-sub { color: #9fb0c8; }
-    .audit .arm { background: #162033; border-color: #31405a; }
-    .audit details { margin-top: 12px; border: 1px solid #31405a; border-radius: 10px; background: #0f172a; }
-    .audit summary { padding: 12px 14px; cursor: pointer; font-weight: 750; }
     .evidence-body { padding: 0 14px 14px; }
     .evidence-body pre { margin: 8px 0 0; padding: 13px; overflow: auto; border-radius: 8px; color: #dbeafe; background: #080f1d; white-space: pre-wrap; overflow-wrap: anywhere; }
     .evidence-body img { display: block; max-width: 100%; margin-top: 12px; border-radius: 8px; border: 1px solid #31405a; }
@@ -209,7 +218,6 @@
         </button>
         <div class="language-menu" id="language-menu" role="listbox" hidden></div>
       </div>
-      <div class="eyebrow" id="eyebrow"></div>
       <h1 id="title"></h1>
       <p class="lede" id="verdict-summary"></p>
       <div class="verdict" id="verdict"></div>
@@ -224,44 +232,39 @@
       <div class="section-head"><h2 id="comparison-title"></h2><p id="comparison-note"></p></div>
       <div class="metric-grid" id="metrics"></div>
       <div class="bars" id="time-bars"></div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2 id="process-title"></h2><p id="process-note"></p></div>
-      <div class="compare">
-        <article class="arm baseline" id="baseline-process"></article>
-        <article class="arm candidate" id="candidate-process"></article>
+      <div class="subsection">
+        <h3 class="subsection-title" id="round-results-title"></h3>
+        <div class="table-wrap" id="round-results"></div>
+      </div>
+      <div class="subsection">
+        <h3 class="subsection-title" id="experiment-findings-title"></h3>
+        <div class="analysis-card"><ul id="experiment-findings"></ul></div>
+      </div>
+      <div class="subsection">
+        <h3 class="subsection-title" id="research-title"></h3>
+        <p class="research-summary" id="research-summary"></p>
+        <div class="source-list" id="research-sources"></div>
+      </div>
+      <div class="subsection">
+        <h3 class="subsection-title" id="analysis-title"></h3>
+        <div class="analysis-grid">
+          <div class="analysis-card"><h3 id="benefits-title"></h3><ul id="benefits"></ul></div>
+          <div class="analysis-card"><h3 id="tradeoffs-title"></h3><ul id="tradeoffs"></ul></div>
+        </div>
+        <h3 id="scenarios-title" style="margin-top:22px"></h3>
+        <div class="scenario-grid" id="scenarios"></div>
+        <div class="recommendation"><strong id="recommendation-title"></strong><p id="recommendation"></p></div>
+        <div class="limitation"><strong id="limitation-title"></strong><div id="limitation"></div></div>
       </div>
     </section>
 
     <section class="section">
-      <div class="section-head"><h2 id="experiment-findings-title"></h2><p id="experiment-findings-note"></p></div>
-      <div class="analysis-card"><ul id="experiment-findings"></ul></div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2 id="research-title"></h2><p id="research-note"></p></div>
-      <p class="research-summary" id="research-summary"></p>
-      <div class="source-list" id="research-sources"></div>
-    </section>
-
-    <section class="section">
-      <div class="section-head"><h2 id="analysis-title"></h2><p id="analysis-note"></p></div>
-      <div class="analysis-grid">
-        <div class="analysis-card"><h3 id="benefits-title"></h3><ul id="benefits"></ul></div>
-        <div class="analysis-card"><h3 id="tradeoffs-title"></h3><ul id="tradeoffs"></ul></div>
-      </div>
-      <h3 id="scenarios-title" style="margin-top:22px"></h3>
-      <div class="scenario-grid" id="scenarios"></div>
-      <div class="recommendation"><strong id="recommendation-title"></strong><p id="recommendation"></p></div>
-      <div class="limitation"><strong id="limitation-title"></strong><div id="limitation"></div></div>
-    </section>
-
-    <section class="section audit">
-      <div class="section-head"><h2 id="audit-title"></h2><p id="audit-note"></p></div>
-      <div class="compare">
-        <article class="arm baseline" id="baseline-evidence"></article>
-        <article class="arm candidate" id="candidate-evidence"></article>
+      <div class="section-head"><h2 id="design-title"></h2><p id="design-note"></p></div>
+      <div class="design-grid" id="design-grid"></div>
+      <div class="subsection">
+        <h3 class="subsection-title" id="process-title"></h3>
+        <p class="research-summary" id="process-note"></p>
+        <div id="process-rounds"></div>
       </div>
     </section>
 
@@ -274,68 +277,72 @@
     const $ = (id) => document.getElementById(id);
     const UI = {
       "en": {
-        eyebrow: "Capability Value Test", task: "Task: ", question: "Value question: ", tested: "Tested: ",
-        comparison: "Core comparison", comparisonNote: "Missing measurements remain visible as “Not available”; they are never treated as zero.",
+        task: "Task: ", question: "Value question: ", tested: "Tested: ",
+        comparison: "1. Core comparison and experiment analysis", comparisonNote: "Compare the original and new methods across three rounds, then interpret the result using observed evidence and cited external information.",
         quality: "Result quality", time: "End-to-end time", tokens: "Tokens", cost: "Cost", missing: "Not available",
         candidateTime: "Candidate time", candidateTokens: "Candidate tokens", candidateCost: "Candidate cost", noChange: "no material change", lower: "lower", higher: "higher",
-        process: "Process comparison", processNote: "Recorded execution steps. A headless timeline is an execution record, not a live video.",
+        roundResults: "Three-round results", round: "Round", taskSample: "Task sample", originalResult: "Original method", newResult: "New method", keyDifference: "Key difference",
+        design: "2. Experiment design and evidence", designNote: "See why the experiment was designed this way; expand a round to inspect the recorded process and raw invocation evidence.", designBasis: "Design basis", fairness: "Fair-comparison conditions", judgmentRule: "Judgment rule",
+        process: "Execution process comparison", processNote: "Timelines show meaningful events at their recorded elapsed time. They are execution records, not live recordings.", viewEvidence: "View evidence", additionalEvidence: "Additional evidence",
         baseline: "Baseline", candidate: "Candidate", verified: "Verified", unverified: "Unverified", result: "Result",
-        experimentFindings: "What the experiment established", experimentFindingsNote: "Only observations produced by the approved A/B test are listed here.",
-        research: "External research", researchNote: "Public sources add context that the experiment alone could not establish.", noSources: "No reliable external sources were available.",
-        sourceFinding: "Supported finding", retrieved: "Retrieved", analysis: "Analysis and recommendation", analysisNote: "The synthesis combines experiment evidence and cited research without hiding conflicts.",
+        experimentFindings: "What the experiment established",
+        research: "External information and sources", noSources: "No reliable external sources were available.",
+        sourceFinding: "Supported finding", analysis: "Synthesis and usage guidance",
         benefits: "Benefits", tradeoffs: "Tradeoffs", scenarios: "Concrete usage scenarios", recommendation: "Recommendation", limitation: "Main limitation",
         audience: "Who", scenarioTask: "Task", environment: "Environment", reason: "Why", basis: "Evidence basis", confidence: "Confidence", sources: "Sources",
         use: "Use", avoid: "Avoid", retest: "Retest", experiment: "Experiment", researchBasis: "Research", combined: "Combined", high: "High", medium: "Medium", low: "Low",
-        audit: "Execution logs and invocation evidence", auditNote: "This final section preserves the observable evidence used to verify that each method actually ran.",
-        baselineEvidence: "Baseline evidence", candidateEvidence: "Candidate evidence", evidenceFile: "Evidence file", footer: "Generated locally by capability-value-test. No external scripts or fonts are loaded."
+        evidenceFile: "Evidence file", footer: "Generated locally by capability-value-test. No external scripts or fonts are loaded."
       },
       "zh-CN": {
-        eyebrow: "新能力价值验证", task: "任务：", question: "价值问题：", tested: "测试时间：",
-        comparison: "核心对比", comparisonNote: "缺失指标会明确显示为“不可用”，不会被当作零。",
+        task: "任务：", question: "价值问题：", tested: "测试时间：",
+        comparison: "一、核心对比与实验分析", comparisonNote: "先比较原方法与新方法在三轮实验中的核心差异，再结合实验观察和有来源的外部资料理解结论。",
         quality: "结果质量", time: "任务完成耗时", tokens: "Token 用量", cost: "费用", missing: "不可用",
         candidateTime: "新方法耗时", candidateTokens: "新方法 Token", candidateCost: "新方法费用", noChange: "基本无变化", lower: "降低", higher: "增加",
-        process: "过程对照", processNote: "这里展示真实执行记录；无头时间线不是实时录屏。",
+        roundResults: "三轮实验结果", round: "轮次", taskSample: "任务样本", originalResult: "原方法", newResult: "新方法", keyDifference: "主要差异",
+        design: "二、实验设计与证据", designNote: "快速了解实验为什么这样设计；需要核验时，再展开每轮的执行过程和原始调用证据。", designBasis: "设计依据", fairness: "公平条件", judgmentRule: "判断标准",
+        process: "执行过程对比", processNote: "时间线只展示真实记录到的关键动作；它是执行记录，不是实时录屏。", viewEvidence: "查看证据", additionalEvidence: "其他证据",
         baseline: "原方法", candidate: "新能力方法", verified: "已验证", unverified: "无法验证", result: "结果",
-        experimentFindings: "本次实验直接证明了什么", experimentFindingsNote: "这里只呈现经批准的 A/B 实验实际观察到的内容。",
-        research: "外部资料与来源", researchNote: "公开资料用于补充单次实验无法回答的背景问题。", noSources: "没有获得可靠的外部资料。",
-        sourceFinding: "该来源支持的结论", retrieved: "检索日期", analysis: "综合分析与建议", analysisNote: "综合判断同时使用实验结果和有来源的外部资料，并明确保留两者的差异。",
+        experimentFindings: "实验直接观察",
+        research: "外部资料与来源", noSources: "没有获得可靠的外部资料。",
+        sourceFinding: "该来源支持的结论", analysis: "综合分析与使用建议",
         benefits: "主要优势", tradeoffs: "主要劣势与代价", scenarios: "具体使用场景", recommendation: "采用建议", limitation: "主要限制",
         audience: "谁在使用", scenarioTask: "具体任务", environment: "使用环境", reason: "判断原因", basis: "判断依据", confidence: "可信程度", sources: "资料来源",
         use: "适合使用", avoid: "不适合使用", retest: "需要补充测试", experiment: "实验", researchBasis: "外部资料", combined: "实验与资料", high: "高", medium: "中", low: "低",
-        audit: "执行日志与调用证据", auditNote: "最后一部分保留用于验证两种方法真实执行过的原始证据。",
-        baselineEvidence: "原方法证据", candidateEvidence: "新能力证据", evidenceFile: "证据文件", footer: "由 capability-value-test 在本地生成；未加载外部脚本或字体。"
+        evidenceFile: "证据文件", footer: "由 capability-value-test 在本地生成；未加载外部脚本或字体。"
       },
       "ja": {
-        eyebrow: "新しい能力の価値検証", task: "タスク：", question: "価値の問い：", tested: "実施日：",
-        comparison: "主要比較", comparisonNote: "取得できない指標はゼロではなく「利用不可」と表示します。",
+        task: "タスク：", question: "価値の問い：", tested: "実施日：",
+        comparison: "1. 主要比較と実験分析", comparisonNote: "3回の実験で従来方式と新方式を比較し、観察結果と出典付き外部情報から結論を読み解きます。",
         quality: "結果品質", time: "完了時間", tokens: "Token 使用量", cost: "コスト", missing: "利用不可",
         candidateTime: "新方式の時間", candidateTokens: "新方式の Token", candidateCost: "新方式のコスト", noChange: "実質的な変化なし", lower: "減少", higher: "増加",
-        process: "プロセス比較", processNote: "実行記録です。ヘッドレスのタイムラインはライブ映像ではありません。",
+        roundResults: "3回の実験結果", round: "回", taskSample: "タスク", originalResult: "従来方式", newResult: "新方式", keyDifference: "主な差異",
+        design: "2. 実験設計と証拠", designNote: "設計理由を確認し、各回を展開して実行過程と呼び出し証拠を検証できます。", designBasis: "設計根拠", fairness: "公平条件", judgmentRule: "判定基準",
+        process: "実行プロセス比較", processNote: "タイムラインは記録された重要イベントのみを示す実行記録で、ライブ映像ではありません。", viewEvidence: "証拠を見る", additionalEvidence: "追加証拠",
         baseline: "従来方式", candidate: "新しい能力", verified: "検証済み", unverified: "未検証", result: "結果",
-        experimentFindings: "実験で直接確認できたこと", experimentFindingsNote: "承認済み A/B テストで観測した内容だけを示します。",
-        research: "外部調査と出典", researchNote: "実験だけでは判断できない背景を公開情報で補います。", noSources: "信頼できる外部情報を取得できませんでした。",
-        sourceFinding: "この出典が支える内容", retrieved: "取得日", analysis: "総合分析と提案", analysisNote: "実験結果と出典付き調査を分けて示した上で統合します。",
+        experimentFindings: "実験で直接確認できたこと",
+        research: "外部調査と出典", noSources: "信頼できる外部情報を取得できませんでした。",
+        sourceFinding: "この出典が支える内容", analysis: "総合分析と利用提案",
         benefits: "主な利点", tradeoffs: "主な欠点と代償", scenarios: "具体的な利用場面", recommendation: "採用提案", limitation: "主な制約",
         audience: "利用者", scenarioTask: "タスク", environment: "環境", reason: "理由", basis: "根拠", confidence: "確度", sources: "出典",
         use: "利用する", avoid: "利用しない", retest: "再テスト", experiment: "実験", researchBasis: "外部調査", combined: "実験と調査", high: "高", medium: "中", low: "低",
-        audit: "実行ログと呼び出し証拠", auditNote: "最後のセクションには両方式が実行されたことを示す原始証拠を保持します。",
-        baselineEvidence: "従来方式の証拠", candidateEvidence: "新能力の証拠", evidenceFile: "証拠ファイル", footer: "capability-value-test がローカル生成しました。外部スクリプトやフォントは使用していません。"
+        evidenceFile: "証拠ファイル", footer: "capability-value-test がローカル生成しました。外部スクリプトやフォントは使用していません。"
       },
       "ko": {
-        eyebrow: "새 기능 가치 검증", task: "작업: ", question: "가치 질문: ", tested: "테스트 날짜: ",
-        comparison: "핵심 비교", comparisonNote: "누락된 지표는 0이 아니라 '사용 불가'로 표시합니다.",
+        task: "작업: ", question: "가치 질문: ", tested: "테스트 날짜: ",
+        comparison: "1. 핵심 비교와 실험 분석", comparisonNote: "세 차례 실험에서 기존 방식과 새 방식을 비교한 뒤 관찰 결과와 출처가 있는 외부 정보로 결론을 해석합니다.",
         quality: "결과 품질", time: "완료 시간", tokens: "Token 사용량", cost: "비용", missing: "사용 불가",
         candidateTime: "새 방식 시간", candidateTokens: "새 방식 Token", candidateCost: "새 방식 비용", noChange: "유의미한 변화 없음", lower: "감소", higher: "증가",
-        process: "과정 비교", processNote: "실제 실행 기록입니다. 헤드리스 타임라인은 실시간 영상이 아닙니다.",
+        roundResults: "세 차례 실험 결과", round: "회차", taskSample: "작업", originalResult: "기존 방식", newResult: "새 방식", keyDifference: "주요 차이",
+        design: "2. 실험 설계와 증거", designNote: "실험 설계 이유를 확인하고 각 회차를 펼쳐 실행 과정과 호출 증거를 검증할 수 있습니다.", designBasis: "설계 근거", fairness: "공정 조건", judgmentRule: "판단 기준",
+        process: "실행 과정 비교", processNote: "타임라인은 기록된 주요 이벤트만 보여 주는 실행 기록이며 실시간 영상이 아닙니다.", viewEvidence: "증거 보기", additionalEvidence: "추가 증거",
         baseline: "기존 방식", candidate: "새 기능 방식", verified: "검증됨", unverified: "검증 안 됨", result: "결과",
-        experimentFindings: "실험이 직접 확인한 내용", experimentFindingsNote: "승인된 A/B 테스트에서 실제로 관찰한 내용만 표시합니다.",
-        research: "외부 조사와 출처", researchNote: "실험만으로 확인할 수 없는 배경을 공개 자료로 보완합니다.", noSources: "신뢰할 수 있는 외부 자료를 확보하지 못했습니다.",
-        sourceFinding: "이 출처가 뒷받침하는 내용", retrieved: "검색일", analysis: "종합 분석과 제안", analysisNote: "실험 결과와 출처가 있는 외부 자료를 구분한 뒤 함께 판단합니다.",
+        experimentFindings: "실험에서 직접 관찰한 내용",
+        research: "외부 조사와 출처", noSources: "신뢰할 수 있는 외부 자료를 확보하지 못했습니다.",
+        sourceFinding: "이 출처가 뒷받침하는 내용", analysis: "종합 분석과 사용 제안",
         benefits: "주요 장점", tradeoffs: "주요 단점과 비용", scenarios: "구체적인 사용 상황", recommendation: "도입 제안", limitation: "주요 한계",
         audience: "사용자", scenarioTask: "구체적 작업", environment: "환경", reason: "이유", basis: "근거", confidence: "신뢰도", sources: "출처",
         use: "사용", avoid: "사용하지 않음", retest: "추가 테스트", experiment: "실험", researchBasis: "외부 조사", combined: "실험과 조사", high: "높음", medium: "중간", low: "낮음",
-        audit: "실행 로그와 호출 증거", auditNote: "마지막 섹션은 두 방식이 실제 실행되었음을 보여 주는 원본 증거를 보존합니다.",
-        baselineEvidence: "기존 방식 증거", candidateEvidence: "새 기능 증거", evidenceFile: "증거 파일", footer: "capability-value-test가 로컬에서 생성했습니다. 외부 스크립트나 글꼴을 불러오지 않습니다."
+        evidenceFile: "증거 파일", footer: "capability-value-test가 로컬에서 생성했습니다. 외부 스크립트나 글꼴을 불러오지 않습니다."
       }
     };
 
@@ -424,19 +431,78 @@
       head.append(text, node("span", `badge ${arm.verified ? "verified" : "unverified"}`, arm.verified ? copy.verified : copy.unverified));
       return head;
     }
-    function renderProcess(arm, targetId, title) {
-      const target = $(targetId);
+    function evidenceDetails(item) {
+      const details = node("details", "step-evidence");
+      details.append(node("summary", "", `${copy.viewEvidence} · ${item.label}`));
+      const body = node("div", "evidence-body");
+      if (item.content) body.append(node("pre", "", item.content));
+      if (item.data_url) { const image = node("img"); image.src = item.data_url; image.alt = item.label; body.append(image); }
+      else if (item.path) body.append(node("div", "arm-sub", `${copy.evidenceFile}: ${item.path}`));
+      if (item.attachment_error) body.append(node("div", "attachment-error", item.attachment_error));
+      details.append(body);
+      return details;
+    }
+    function renderArmProcess(arm, title, kind) {
+      const target = node("article", `arm ${kind}`);
       target.append(armHeading(arm, title));
       const timeline = node("div", "timeline");
       arm.steps.forEach((item) => {
         const step = node("div", "step");
         if (item.time) step.append(node("div", "step-time", item.time));
         step.append(node("div", "step-title", item.title), node("div", "step-detail", item.detail));
+        (item.evidence || []).forEach((evidence) => step.append(evidenceDetails(evidence)));
         timeline.append(step);
       });
       const result = node("div", "result-box");
       result.append(node("strong", "", copy.result), node("div", "", arm.result_summary));
       target.append(timeline, result);
+      if (arm.evidence && arm.evidence.length) {
+        const extra = node("details", "step-evidence");
+        extra.append(node("summary", "", copy.additionalEvidence));
+        const body = node("div", "evidence-body");
+        arm.evidence.forEach((item) => body.append(evidenceDetails(item)));
+        extra.append(body); target.append(extra);
+      }
+      return target;
+    }
+    function roundDifference(round) {
+      const delta = round.baseline.elapsed_seconds - round.candidate.elapsed_seconds;
+      if (Math.abs(delta) < 0.01) return copy.noChange;
+      return delta > 0
+        ? `${data.candidate.name}: ${formatSeconds(delta)} ${copy.lower}`
+        : `${data.candidate.name}: ${formatSeconds(Math.abs(delta))} ${copy.higher}`;
+    }
+    function renderRoundTable() {
+      const table = node("table");
+      const head = node("thead");
+      const headRow = node("tr");
+      [copy.round, copy.taskSample, copy.originalResult, copy.newResult, copy.keyDifference].forEach((label) => headRow.append(node("th", "", label)));
+      head.append(headRow); table.append(head);
+      const body = node("tbody");
+      data.rounds.forEach((round, index) => {
+        const row = node("tr");
+        row.append(node("td", "", String(index + 1)), node("td", "", round.task));
+        row.append(node("td", "", `${round.baseline.quality.label} · ${formatSeconds(round.baseline.elapsed_seconds)}`));
+        row.append(node("td", "", `${round.candidate.quality.label} · ${formatSeconds(round.candidate.elapsed_seconds)}`));
+        row.append(node("td", "", roundDifference(round)));
+        body.append(row);
+      });
+      table.append(body); $("round-results").append(table);
+    }
+    function renderRounds() {
+      data.rounds.forEach((round, index) => {
+        const details = node("details", "process-round");
+        if (index === 0) details.open = true;
+        details.append(node("summary", "", `${index + 1}. ${round.title}`));
+        const compare = node("div", "compare");
+        compare.append(renderArmProcess(round.baseline, copy.baseline, "baseline"), renderArmProcess(round.candidate, copy.candidate, "candidate"));
+        details.append(compare); $("process-rounds").append(details);
+      });
+    }
+    function renderDesign() {
+      [[copy.designBasis, data.design.basis], [copy.fairness, data.design.fairness], [copy.judgmentRule, data.design.judgment_rule]].forEach(([label, value]) => {
+        const card = node("div", "design-card"); card.append(node("h3", "", label), node("p", "", value)); $("design-grid").append(card);
+      });
     }
     function renderList(targetId, items) {
       const target = $(targetId);
@@ -452,7 +518,7 @@
         const card = node("article", "source-card");
         const link = node("a", "", source.title);
         link.href = source.url; link.target = "_blank"; link.rel = "noreferrer";
-        card.append(link, node("div", "source-meta", `${source.publisher} · ${copy.retrieved}: ${source.retrieved_at}`));
+        card.append(link, node("div", "source-meta", source.publisher));
         const finding = node("p", "");
         finding.append(node("strong", "", `${copy.sourceFinding}: `), document.createTextNode(source.finding));
         card.append(finding);
@@ -482,28 +548,14 @@
         $("scenarios").append(card);
       });
     }
-    function renderEvidence(arm, targetId, title) {
-      const target = $(targetId);
-      target.append(armHeading(arm, title));
-      arm.evidence.forEach((item) => {
-        const details = node("details");
-        details.append(node("summary", "", `${item.label} · ${item.type}`));
-        const body = node("div", "evidence-body");
-        if (item.content) body.append(node("pre", "", item.content));
-        if (item.data_url) { const image = node("img"); image.src = item.data_url; image.alt = item.label; body.append(image); }
-        else if (item.path) body.append(node("div", "arm-sub", `${copy.evidenceFile}: ${item.path}`));
-        if (item.attachment_error) body.append(node("div", "attachment-error", item.attachment_error));
-        details.append(body); target.append(details);
-      });
-    }
     function setStaticText() {
       const mapping = {
-        eyebrow: "eyebrow", "task-label": "task", "question-label": "question", "tested-label": "tested",
-        "comparison-title": "comparison", "comparison-note": "comparisonNote", "process-title": "process", "process-note": "processNote",
-        "experiment-findings-title": "experimentFindings", "experiment-findings-note": "experimentFindingsNote",
-        "research-title": "research", "research-note": "researchNote", "analysis-title": "analysis", "analysis-note": "analysisNote",
+        "task-label": "task", "question-label": "question", "tested-label": "tested",
+        "comparison-title": "comparison", "comparison-note": "comparisonNote", "round-results-title": "roundResults",
+        "experiment-findings-title": "experimentFindings", "research-title": "research", "analysis-title": "analysis",
         "benefits-title": "benefits", "tradeoffs-title": "tradeoffs", "scenarios-title": "scenarios",
-        "recommendation-title": "recommendation", "limitation-title": "limitation", "audit-title": "audit", "audit-note": "auditNote", footer: "footer"
+        "recommendation-title": "recommendation", "limitation-title": "limitation", "design-title": "design", "design-note": "designNote",
+        "process-title": "process", "process-note": "processNote", footer: "footer"
       };
       Object.entries(mapping).forEach(([id, key]) => { $(id).textContent = copy[key]; });
     }
@@ -524,17 +576,16 @@
       $("tested-at").textContent = data.tested_at;
       $("recommendation").textContent = data.analysis.recommendation;
       $("limitation").textContent = data.verdict.limitation;
-      ["metrics", "time-bars", "baseline-process", "candidate-process", "experiment-findings", "research-sources", "benefits", "tradeoffs", "scenarios", "baseline-evidence", "candidate-evidence"].forEach(clear);
+      ["metrics", "time-bars", "round-results", "experiment-findings", "research-sources", "benefits", "tradeoffs", "scenarios", "design-grid", "process-rounds"].forEach(clear);
       renderMetrics();
-      renderProcess(data.baseline, "baseline-process", copy.baseline);
-      renderProcess(data.candidate, "candidate-process", copy.candidate);
+      renderRoundTable();
       renderList("experiment-findings", data.analysis.experiment_findings);
       renderResearch();
       renderList("benefits", data.analysis.benefits);
       renderList("tradeoffs", data.analysis.tradeoffs);
       renderScenarios();
-      renderEvidence(data.baseline, "baseline-evidence", copy.baselineEvidence);
-      renderEvidence(data.candidate, "candidate-evidence", copy.candidateEvidence);
+      renderDesign();
+      renderRounds();
       renderLanguageMenu();
     }
     function renderLanguageMenu() {

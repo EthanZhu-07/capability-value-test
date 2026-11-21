@@ -20,33 +20,21 @@ RESEARCH_STATES = {"completed", "unavailable"}
 SCENARIO_RECOMMENDATIONS = {"use", "avoid", "retest"}
 SCENARIO_BASES = {"experiment", "research", "combined"}
 CONFIDENCE_LEVELS = {"high", "medium", "low"}
-REPORT_FORMAT_VERSION = "1.0"
+REPORT_FORMAT_VERSION = "2.0"
 
 # This is the fixed public report contract. The renderer refuses to produce an
 # artifact when a future template edit removes or reorders one of these blocks.
 FIXED_SECTION_MARKERS = (
     'id="comparison-title"',
-    'id="process-title"',
-    'id="experiment-findings-title"',
-    'id="research-title"',
-    'id="analysis-title"',
-    'id="audit-title"',
+    'id="design-title"',
 )
 REQUIRED_EXPLANATION_MARKERS = (
     'id="comparison-note"',
-    'id="process-note"',
-    'id="experiment-findings-note"',
-    'id="research-note"',
-    'id="analysis-note"',
-    'id="audit-note"',
+    'id="design-note"',
 )
 REQUIRED_EXPLANATION_KEYS = (
     "comparisonNote",
-    "processNote",
-    "experimentFindingsNote",
-    "researchNote",
-    "analysisNote",
-    "auditNote",
+    "designNote",
 )
 
 
@@ -165,7 +153,7 @@ def validate_analysis(data: Any) -> dict[str, Any]:
         if source_id in source_ids:
             raise ValidationError(f"{source_path}.id must be unique")
         source_ids.add(source_id)
-        for key in ("title", "publisher", "retrieved_at", "finding"):
+        for key in ("title", "publisher", "finding"):
             require_string(source, key, source_path)
         require_public_url(source, "url", source_path)
 
@@ -262,6 +250,17 @@ def validate_arm(data: Any, path: str) -> dict[str, Any]:
         step = require_mapping(step_value, step_path)
         require_string(step, "title", step_path)
         require_string(step, "detail", step_path)
+        require_string(step, "time", step_path)
+        step_evidence = step.get("evidence", [])
+        if not isinstance(step_evidence, list):
+            raise ValidationError(f"{step_path}.evidence must be an array")
+        for evidence_index, item_value in enumerate(step_evidence):
+            item_path = f"{step_path}.evidence[{evidence_index}]"
+            item = require_mapping(item_value, item_path)
+            require_string(item, "type", item_path)
+            require_string(item, "label", item_path)
+            if not item.get("content") and not item.get("path"):
+                raise ValidationError(f"{item_path} needs content or path")
 
     evidence = arm.get("evidence")
     if not isinstance(evidence, list) or not evidence:
@@ -294,6 +293,26 @@ def validate(data: Any) -> dict[str, Any]:
     validate_arm(root.get("baseline"), "root.baseline")
     validate_arm(root.get("candidate"), "root.candidate")
 
+    design = require_mapping(root.get("design"), "root.design")
+    for key in ("basis", "fairness", "judgment_rule"):
+        require_string(design, key, "root.design")
+
+    rounds = root.get("rounds")
+    if not isinstance(rounds, list) or len(rounds) != 3:
+        raise ValidationError("root.rounds must contain exactly three rounds")
+    round_ids: set[str] = set()
+    for index, round_value in enumerate(rounds):
+        round_path = f"root.rounds[{index}]"
+        round_data = require_mapping(round_value, round_path)
+        round_id = require_string(round_data, "id", round_path)
+        if round_id in round_ids:
+            raise ValidationError(f"{round_path}.id must be unique")
+        round_ids.add(round_id)
+        require_string(round_data, "title", round_path)
+        require_string(round_data, "task", round_path)
+        validate_arm(round_data.get("baseline"), f"{round_path}.baseline")
+        validate_arm(round_data.get("candidate"), f"{round_path}.candidate")
+
     validate_analysis(root.get("analysis"))
     validate_i18n(root.get("i18n"))
 
@@ -302,8 +321,18 @@ def validate(data: Any) -> dict[str, Any]:
 
 def enrich_evidence(data: dict[str, Any], input_path: Path) -> None:
     base = input_path.parent.resolve()
+    evidence_lists: list[list[dict[str, Any]]] = []
     for arm_name in ("baseline", "candidate"):
-        for item in data[arm_name]["evidence"]:
+        evidence_lists.append(data[arm_name]["evidence"])
+    for round_data in data["rounds"]:
+        for arm_name in ("baseline", "candidate"):
+            arm = round_data[arm_name]
+            evidence_lists.append(arm["evidence"])
+            for step in arm["steps"]:
+                evidence_lists.append(step.get("evidence", []))
+
+    for evidence_list in evidence_lists:
+        for item in evidence_list:
             raw_path = item.get("path")
             if not raw_path:
                 continue

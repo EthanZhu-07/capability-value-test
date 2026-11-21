@@ -6,14 +6,14 @@
   "verdict": {
     "status": "inconclusive",
     "label": "Inconclusive — more evidence is required",
-    "summary": "The candidate completed the sample task with equivalent quality and lower elapsed time, but this single demonstration run is not a general benchmark.",
-    "limitation": "One demonstration run per arm; the numbers below are fixture data, not a claim about a real product."
+    "summary": "The candidate completed all three sample tasks with equivalent quality and lower average elapsed time, but these fixtures are not a general benchmark.",
+    "limitation": "Three demonstration fixtures per method; the numbers below are sample data, not a claim about a real product."
   },
   "baseline": {
     "name": "Current method",
     "version": "sample configuration",
     "verified": true,
-    "elapsed_seconds": 14.2,
+    "elapsed_seconds": 14.8,
     "tokens": null,
     "cost": null,
     "cost_currency": "USD",
@@ -37,7 +37,7 @@
     "name": "Candidate capability",
     "version": "sample configuration",
     "verified": true,
-    "elapsed_seconds": 8.1,
+    "elapsed_seconds": 8.7,
     "tokens": null,
     "cost": null,
     "cost_currency": "USD",
@@ -57,6 +57,100 @@
       {"type": "log", "label": "Completion log", "content": "[demo] candidate finished; status=success; elapsed=8.1s"}
     ]
   },
+  "design": {
+    "basis": "The three samples represent recurring public-page extraction work: a news article, a documentation page, and a project README.",
+    "fairness": "Both methods received the same page, requested fields, output format, stopping rule, and quality requirements in each round.",
+    "judgment_rule": "A round passes when every requested field is present and supported by the source page; elapsed time runs from submission to a deliverable answer."
+  },
+  "rounds": [
+    {
+      "id": "round-1",
+      "title": "Public news article",
+      "task": "Extract the title, publication date, and three supported key points.",
+      "baseline": {
+        "name": "Current method", "version": "sample configuration", "verified": true,
+        "elapsed_seconds": 14.2, "tokens": null, "cost": null, "cost_currency": "USD",
+        "quality": {"status": "met", "label": "Requirements met", "summary": "All requested fields were correct and complete."},
+        "steps": [
+          {"time": "00:00", "title": "Received task", "detail": "Submitted the shared article and extraction requirements.", "evidence": [{"type": "input", "label": "Shared input", "content": "fixture=article-01; fields=title,date,key_points"}]},
+          {"time": "00:06", "title": "Loaded article", "detail": "Retrieved and parsed the public page.", "evidence": [{"type": "command", "label": "Baseline invocation", "content": "sample-baseline --fixture article-01"}]},
+          {"time": "00:14", "title": "Returned result", "detail": "Produced the requested structured extraction.", "evidence": [{"type": "log", "label": "Completion log", "content": "[demo] round=1 arm=baseline status=success elapsed=14.2s"}]}
+        ],
+        "result_summary": "Complete extraction in 14.2 seconds.",
+        "evidence": [{"type": "metadata", "label": "Round status", "content": "round=1; arm=baseline; verified=true"}]
+      },
+      "candidate": {
+        "name": "Candidate capability", "version": "sample configuration", "verified": true,
+        "elapsed_seconds": 8.1, "tokens": null, "cost": null, "cost_currency": "USD",
+        "quality": {"status": "met", "label": "Requirements met", "summary": "All requested fields were correct and complete."},
+        "steps": [
+          {"time": "00:00", "title": "Received the same task", "detail": "Submitted the identical article and extraction requirements.", "evidence": [{"type": "input", "label": "Shared input", "content": "fixture=article-01; fields=title,date,key_points"}]},
+          {"time": "00:02", "title": "Invoked candidate", "detail": "Called the candidate extraction capability.", "evidence": [{"type": "tool_call", "label": "Candidate invocation", "content": "candidate.extract({\"fixture\":\"article-01\"})"}]},
+          {"time": "00:08", "title": "Returned result", "detail": "Produced the requested structured extraction.", "evidence": [{"type": "log", "label": "Completion log", "content": "[demo] round=1 arm=candidate status=success elapsed=8.1s"}]}
+        ],
+        "result_summary": "Complete extraction in 8.1 seconds.",
+        "evidence": [{"type": "metadata", "label": "Round status", "content": "round=1; arm=candidate; verified=true"}]
+      }
+    },
+    {
+      "id": "round-2",
+      "title": "Product documentation page",
+      "task": "Extract the product name, two supported features, and one stated limitation.",
+      "baseline": {
+        "name": "Current method", "version": "sample configuration", "verified": true,
+        "elapsed_seconds": 16.4, "tokens": null, "cost": null, "cost_currency": "USD",
+        "quality": {"status": "met", "label": "Requirements met", "summary": "All requested fields were supported by the page."},
+        "steps": [
+          {"time": "00:00", "title": "Received task", "detail": "Submitted the documentation page and required fields.", "evidence": [{"type": "input", "label": "Shared input", "content": "fixture=docs-01; fields=name,features,limitation"}]},
+          {"time": "00:07", "title": "Read documentation", "detail": "Located feature and limitation sections.", "evidence": [{"type": "command", "label": "Baseline invocation", "content": "sample-baseline --fixture docs-01"}]},
+          {"time": "00:16", "title": "Returned result", "detail": "Produced the requested fields.", "evidence": [{"type": "log", "label": "Completion log", "content": "[demo] round=2 arm=baseline status=success elapsed=16.4s"}]}
+        ],
+        "result_summary": "Complete extraction in 16.4 seconds.",
+        "evidence": [{"type": "metadata", "label": "Round status", "content": "round=2; arm=baseline; verified=true"}]
+      },
+      "candidate": {
+        "name": "Candidate capability", "version": "sample configuration", "verified": true,
+        "elapsed_seconds": 9.3, "tokens": null, "cost": null, "cost_currency": "USD",
+        "quality": {"status": "met", "label": "Requirements met", "summary": "All requested fields were supported by the page."},
+        "steps": [
+          {"time": "00:00", "title": "Received the same task", "detail": "Submitted the identical documentation page and fields.", "evidence": [{"type": "input", "label": "Shared input", "content": "fixture=docs-01; fields=name,features,limitation"}]},
+          {"time": "00:03", "title": "Invoked candidate", "detail": "Called the candidate extraction capability.", "evidence": [{"type": "tool_call", "label": "Candidate invocation", "content": "candidate.extract({\"fixture\":\"docs-01\"})"}]},
+          {"time": "00:09", "title": "Returned result", "detail": "Produced the requested fields.", "evidence": [{"type": "log", "label": "Completion log", "content": "[demo] round=2 arm=candidate status=success elapsed=9.3s"}]}
+        ],
+        "result_summary": "Complete extraction in 9.3 seconds.",
+        "evidence": [{"type": "metadata", "label": "Round status", "content": "round=2; arm=candidate; verified=true"}]
+      }
+    },
+    {
+      "id": "round-3",
+      "title": "Project README",
+      "task": "Extract the project purpose, installation command, and two usage constraints.",
+      "baseline": {
+        "name": "Current method", "version": "sample configuration", "verified": true,
+        "elapsed_seconds": 13.8, "tokens": null, "cost": null, "cost_currency": "USD",
+        "quality": {"status": "met", "label": "Requirements met", "summary": "All requested fields were found and supported."},
+        "steps": [
+          {"time": "00:00", "title": "Received task", "detail": "Submitted the README and extraction requirements.", "evidence": [{"type": "input", "label": "Shared input", "content": "fixture=readme-01; fields=purpose,install,constraints"}]},
+          {"time": "00:05", "title": "Read README", "detail": "Located purpose, installation, and constraint sections.", "evidence": [{"type": "command", "label": "Baseline invocation", "content": "sample-baseline --fixture readme-01"}]},
+          {"time": "00:13", "title": "Returned result", "detail": "Produced the requested fields.", "evidence": [{"type": "log", "label": "Completion log", "content": "[demo] round=3 arm=baseline status=success elapsed=13.8s"}]}
+        ],
+        "result_summary": "Complete extraction in 13.8 seconds.",
+        "evidence": [{"type": "metadata", "label": "Round status", "content": "round=3; arm=baseline; verified=true"}]
+      },
+      "candidate": {
+        "name": "Candidate capability", "version": "sample configuration", "verified": true,
+        "elapsed_seconds": 8.7, "tokens": null, "cost": null, "cost_currency": "USD",
+        "quality": {"status": "met", "label": "Requirements met", "summary": "All requested fields were found and supported."},
+        "steps": [
+          {"time": "00:00", "title": "Received the same task", "detail": "Submitted the identical README and requirements.", "evidence": [{"type": "input", "label": "Shared input", "content": "fixture=readme-01; fields=purpose,install,constraints"}]},
+          {"time": "00:02", "title": "Invoked candidate", "detail": "Called the candidate extraction capability.", "evidence": [{"type": "tool_call", "label": "Candidate invocation", "content": "candidate.extract({\"fixture\":\"readme-01\"})"}]},
+          {"time": "00:08", "title": "Returned result", "detail": "Produced the requested fields.", "evidence": [{"type": "log", "label": "Completion log", "content": "[demo] round=3 arm=candidate status=success elapsed=8.7s"}]}
+        ],
+        "result_summary": "Complete extraction in 8.7 seconds.",
+        "evidence": [{"type": "metadata", "label": "Round status", "content": "round=3; arm=candidate; verified=true"}]
+      }
+    }
+  ],
   "analysis": {
     "experiment_findings": [
       "Both methods met the same extraction requirements in this fixture.",
@@ -72,7 +166,6 @@
           "title": "Lightpanda Browser",
           "publisher": "Lightpanda",
           "url": "https://github.com/lightpanda-io/browser",
-          "retrieved_at": "2026-11-18",
           "finding": "The project presents Lightpanda as a headless browser designed for AI agents and automation."
         }
       ]
@@ -124,8 +217,8 @@
           "primary_question": "新能力能否在不降低结果质量的情况下减少任务完成耗时？",
           "verdict": {
             "label": "证据不足，需要补充实验",
-            "summary": "新能力以相同质量、更短耗时完成了示例任务，但单次演示不能构成普遍结论。",
-            "limitation": "每种方法只运行一次；以下数字是演示数据，不代表任何真实产品。"
+            "summary": "新能力以相同质量和更短平均耗时完成了三轮示例任务，但这些样例不能构成普遍结论。",
+            "limitation": "每种方法包含三轮演示样例；以下数字是示例数据，不代表任何真实产品。"
           },
           "baseline": {
             "name": "当前方法",
@@ -169,7 +262,7 @@
           "title": "新能力価値テストのサンプル",
           "task": "同じ公開記事からタイトル、公開日、3つの要点を抽出する。",
           "primary_question": "結果品質を落とさずに完了時間を短縮できるか。",
-          "verdict": {"label": "証拠不足 — 追加実験が必要", "summary": "同等品質で短時間に完了したが、1回のデモは一般的なベンチマークではありません。", "limitation": "各方式1回のデモデータであり、実製品の主張ではありません。"},
+          "verdict": {"label": "証拠不足 — 追加実験が必要", "summary": "同等品質かつ短い平均時間で3回のサンプルを完了しましたが、一般的なベンチマークではありません。", "limitation": "各方式3回のデモデータであり、実製品の主張ではありません。"},
           "baseline": {"name": "現在の方式", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "必要な項目をすべて返しました。"}, "steps": [{"title": "現在方式を開始", "detail": "共通URLと抽出条件を送信しました。"}, {"title": "記事を読み込み", "detail": "公開ページを取得して解析しました。"}, {"title": "出力を完了", "detail": "指定形式の要約を返しました。"}], "result_summary": "タイトル、日付、3つの要点を完全に抽出しました。"},
           "candidate": {"name": "新しい能力", "version": "サンプル設定", "quality": {"label": "要件を満たす", "summary": "必要な項目をすべて返しました。"}, "steps": [{"title": "新方式を開始", "detail": "同じURLと抽出条件を送信しました。"}, {"title": "記事を読み込み", "detail": "新能力で公開ページを取得して解析しました。"}, {"title": "出力を完了", "detail": "指定形式の要約を返しました。"}], "result_summary": "タイトル、日付、3つの要点を完全に抽出しました。"},
           "analysis": {
@@ -192,7 +285,7 @@
           "title": "새 기능 가치 테스트 예시",
           "task": "같은 공개 기사에서 제목, 게시일, 세 가지 핵심 내용을 추출합니다.",
           "primary_question": "결과 품질을 낮추지 않고 완료 시간을 줄일 수 있는가?",
-          "verdict": {"label": "증거 부족 — 추가 실험 필요", "summary": "같은 품질로 더 빨리 완료했지만 한 번의 데모는 일반적인 벤치마크가 아닙니다.", "limitation": "각 방식 1회 실행의 데모 데이터이며 실제 제품에 대한 주장이 아닙니다."},
+          "verdict": {"label": "증거 부족 — 추가 실험 필요", "summary": "같은 품질과 더 짧은 평균 시간으로 세 가지 샘플을 완료했지만 일반적인 벤치마크는 아닙니다.", "limitation": "각 방식의 세 차례 데모 데이터이며 실제 제품에 대한 주장이 아닙니다."},
           "baseline": {"name": "현재 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "필요한 항목을 모두 반환했습니다."}, "steps": [{"title": "현재 방식 시작", "detail": "공통 URL과 추출 요구를 제출했습니다."}, {"title": "기사 불러오기", "detail": "공개 페이지를 가져와 분석했습니다."}, {"title": "출력 완료", "detail": "요청한 구조화 요약을 반환했습니다."}], "result_summary": "제목, 날짜, 세 가지 핵심 내용을 모두 추출했습니다."},
           "candidate": {"name": "새 기능 방식", "version": "예시 설정", "quality": {"label": "요구 사항 충족", "summary": "필요한 항목을 모두 반환했습니다."}, "steps": [{"title": "새 방식 시작", "detail": "같은 URL과 추출 요구를 제출했습니다."}, {"title": "기사 불러오기", "detail": "새 기능으로 공개 페이지를 가져와 분석했습니다."}, {"title": "출력 완료", "detail": "요청한 구조화 요약을 반환했습니다."}], "result_summary": "제목, 날짜, 세 가지 핵심 내용을 모두 추출했습니다."},
           "analysis": {

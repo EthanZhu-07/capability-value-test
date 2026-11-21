@@ -6,7 +6,7 @@
 
 Capability Value Test es un Skill general para agentes de IA. Verifica si una capacidad recién integrada (por ejemplo, un Skill, modelo, plugin, MCP Server, navegador, componente de código abierto o flujo de un agente) fue realmente utilizada y si crea valor medible frente al método anterior.
 
-Diseña una prueba A/B justa entre el método anterior y el método habilitado por la nueva capacidad. Una persona revisa el diseño completo antes de ejecutar cualquiera de los dos métodos. Al finalizar, genera un informe HTML autónomo, visual y trazable.
+Diseña una prueba A/B justa entre el método anterior y el método habilitado por la nueva capacidad. Por defecto usa tres tareas representativas tomadas del trabajo habitual del usuario o de ejemplos que este proporcione. Una persona revisa el diseño completo antes de ejecutar cualquiera de los dos métodos. Al finalizar, genera un informe HTML autónomo, visual y trazable.
 
 ## Las preguntas que responde
 
@@ -17,19 +17,19 @@ Diseña una prueba A/B justa entre el método anterior y el método habilitado p
 ## Proceso
 
 1. Definir la nueva capacidad y los métodos antes y después de integrarla.
-2. Elegir una tarea real que ambos métodos puedan completar.
-3. Alinear entradas, entorno, restricciones, alcance de la medición y criterios de evaluación.
+2. Elegir tres tareas representativas del trabajo habitual del usuario.
+3. Mantener iguales en cada ronda las entradas, los requisitos de salida, la regla de parada y los criterios de evaluación.
 4. Presentar el diseño completo para revisión humana; revisarlo si se rechaza.
-5. Ejecutar ambos métodos únicamente tras la aprobación explícita y registrar resultados, métricas y evidencia.
+5. Ejecutar ambos métodos en las tres rondas únicamente tras la aprobación explícita y registrar resultados, métricas y evidencia.
 6. Analizar las diferencias y generar el informe HTML.
 
 El objetivo no es hacer ganar a la nueva capacidad, sino determinar qué cambió y si la evidencia respalda su adopción.
 
 ## Informe HTML
 
-1. **Recomendación final**: adoptar, no adoptar o evidencia insuficiente; incluye escenarios adecuados e inadecuados.
-2. **Valor y beneficios**: calidad, tiempo total, Token, coste, pasos, errores y reintentos.
-3. **Prueba de uso**: la última sección conserva por separado comandos, llamadas a herramientas, entradas, salidas, registros, marcas de tiempo, IDs de tarea y estados.
+1. **Resumen de decisión**: muestra primero ambos métodos, el veredicto, la razón principal, la pregunta de valor y la fecha.
+2. **Comparación y análisis**: presenta datos agregados de tres rondas, resultados por ronda, observaciones, fuentes externas, ventajas, desventajas, escenarios concretos e incertidumbre.
+3. **Diseño y evidencia**: explica la selección de tareas, las condiciones justas y los criterios. Cada ronda abre dos líneas de tiempo; las llamadas a modelos y herramientas y los registros originales se adjuntan al paso donde ocurrieron.
 
 Las métricas no disponibles se muestran como “No disponible”, nunca como cero. Los secretos deben eliminarse.
 
@@ -63,12 +63,12 @@ La versión más reciente usa un formato de informe fijo y versionado. Todos los
 
 ## Límites
 
-- Una ejecución por método aporta evidencia orientativa, no una garantía estadística.
-- Ambos métodos deben poder completar la misma tarea representativa.
+- Tres tareas representativas reducen el azar de una sola ejecución, pero siguen aportando evidencia limitada a esas tareas.
+- En cada ronda ambos métodos deben usar la misma entrada y los mismos criterios.
 - Token y coste solo se comparan si el entorno los proporciona.
 - Si no se puede verificar el uso, el resultado debe ser “Evidencia insuficiente”.
 - La ejecución headless se presenta como un registro, no como una grabación en directo.
 
 ## Licencia
 
-Actualmente no se incluye un archivo de licencia. Que el repositorio sea público no concede por sí solo permiso para copiar, modificar o redistribuir el proyecto.
+El proyecto se publica bajo la [Licencia MIT](LICENSE).

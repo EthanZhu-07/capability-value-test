@@ -6,7 +6,7 @@
 
 Capability Value Test est un Skill générique pour les agents d’IA. Il vérifie si une capacité nouvellement intégrée (Skill, modèle, plugin, MCP Server, navigateur, composant open source ou workflow d’agent) a réellement été utilisée et si elle crée une valeur mesurable par rapport à la méthode précédente.
 
-Il conçoit un test A/B équitable entre la méthode précédente et celle rendue possible par la nouvelle capacité. Un humain examine le protocole complet avant toute exécution. Le résultat est un rapport HTML autonome, visuel et traçable.
+Il conçoit un test A/B équitable entre la méthode précédente et celle rendue possible par la nouvelle capacité. Par défaut, il utilise trois tâches représentatives issues du travail habituel de l’utilisateur ou d’exemples fournis. Un humain examine le protocole complet avant toute exécution. Le résultat est un rapport HTML autonome, visuel et traçable.
 
 ## Questions traitées
 
@@ -17,19 +17,19 @@ Il conçoit un test A/B équitable entre la méthode précédente et celle rendu
 ## Déroulement
 
 1. Définir la nouvelle capacité et les méthodes avant et après son intégration.
-2. Choisir une tâche réelle que les deux méthodes peuvent accomplir.
-3. Aligner les entrées, l’environnement, les contraintes, le périmètre de mesure et les critères d’évaluation.
+2. Choisir trois tâches représentatives du travail habituel de l’utilisateur.
+3. Conserver les mêmes entrées, exigences de sortie, règles d’arrêt et critères d’évaluation à chaque manche.
 4. Soumettre le protocole complet à un humain et le réviser s’il est refusé.
-5. Après approbation explicite, exécuter les deux méthodes et enregistrer résultats, métriques et preuves.
+5. Après approbation explicite, exécuter les deux méthodes pendant trois manches et enregistrer résultats, métriques et preuves.
 6. Analyser les écarts et générer le rapport HTML.
 
 L’objectif n’est pas de faire gagner la nouvelle capacité, mais de déterminer ce qui change et si les preuves justifient son adoption.
 
 ## Rapport HTML
 
-1. **Recommandation finale** : adopter, ne pas adopter ou preuves insuffisantes, avec les scénarios adaptés et inadaptés.
-2. **Valeur et bénéfices** : qualité, durée totale, Token, coût, étapes, erreurs et nouvelles tentatives.
-3. **Preuve d’utilisation** : la dernière section conserve séparément commandes, appels d’outils, entrées, sorties, journaux, horodatages, IDs de tâche et statuts.
+1. **Résumé de décision** : présente d’abord les deux méthodes, la conclusion, la raison principale, la question de valeur et la date.
+2. **Comparaison et analyse** : affiche les données agrégées des trois manches, les résultats par manche, les observations, les sources externes, les avantages, les limites, les scénarios concrets et les incertitudes.
+3. **Conception et preuves** : explique le choix des tâches, les conditions équitables et les critères. Chaque manche ouvre deux chronologies ; appels de modèles, outils et journaux bruts sont joints à l’étape où ils se sont produits.
 
 Une métrique absente est indiquée « Indisponible », jamais remplacée par zéro. Les secrets doivent être supprimés.
 
@@ -63,12 +63,12 @@ La dernière version utilise un format de rapport fixe et versionné. Tous les r
 
 ## Limites
 
-- Une exécution par méthode fournit une indication, pas une garantie statistique.
-- Les deux méthodes doivent pouvoir accomplir la même tâche représentative.
+- Trois tâches représentatives réduisent l’effet du hasard, mais ne donnent qu’une indication limitée à ces tâches.
+- À chaque manche, les deux méthodes doivent utiliser la même entrée et les mêmes critères.
 - Les Token et les coûts ne sont comparés que si l’hôte les fournit.
 - Si l’utilisation ne peut pas être vérifiée, la conclusion doit être « Preuves insuffisantes ».
 - Une exécution headless est présentée comme un journal, jamais comme un enregistrement en direct.
 
 ## Licence
 
-Aucun fichier de licence n’est actuellement inclus. Le caractère public du dépôt n’accorde pas à lui seul le droit de copier, modifier ou redistribuer le projet.
+Le projet est publié sous [licence MIT](LICENSE).

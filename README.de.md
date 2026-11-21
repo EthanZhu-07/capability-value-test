@@ -6,7 +6,7 @@
 
 Capability Value Test ist ein allgemeiner Skill für KI-Agenten. Er prüft, ob eine neu integrierte Fähigkeit (etwa Skill, Modell, Plugin, MCP Server, Browser, Open-Source-Komponente oder Agent-Workflow) tatsächlich aufgerufen wurde und gegenüber der bisherigen Methode messbaren Wert schafft.
 
-Er entwirft einen fairen A/B-Test zwischen der bisherigen Methode und der Methode nach Integration der neuen Fähigkeit. Vor der Ausführung prüft ein Mensch den vollständigen Versuchsplan. Danach entsteht ein eigenständiger, visueller und nachvollziehbarer HTML-Bericht.
+Er entwirft einen fairen A/B-Test zwischen der bisherigen Methode und der Methode nach Integration der neuen Fähigkeit. Standardmäßig werden drei repräsentative Aufgaben aus der regelmäßigen Arbeit des Nutzers oder aus bereitgestellten Beispielen verwendet. Vor der Ausführung prüft ein Mensch den vollständigen Versuchsplan. Danach entsteht ein eigenständiger, visueller und nachvollziehbarer HTML-Bericht.
 
 ## Diese Fragen beantwortet der Skill
 
@@ -17,19 +17,19 @@ Er entwirft einen fairen A/B-Test zwischen der bisherigen Methode und der Method
 ## Ablauf
 
 1. Neue Fähigkeit sowie die Methoden vor und nach der Integration festlegen.
-2. Eine reale Aufgabe wählen, die beide Methoden erledigen können.
-3. Eingaben, Umgebung, Einschränkungen, Messumfang und Bewertungskriterien angleichen.
+2. Drei repräsentative Aufgaben aus der regelmäßigen Arbeit des Nutzers wählen.
+3. In jeder Runde dieselben Eingaben, Ausgabeanforderungen, Abbruchregeln und Bewertungskriterien verwenden.
 4. Den vollständigen Plan zur menschlichen Prüfung vorlegen und bei Ablehnung überarbeiten.
-5. Erst nach ausdrücklicher Freigabe beide Methoden ausführen und Ergebnisse, Metriken und Nachweise erfassen.
+5. Erst nach ausdrücklicher Freigabe beide Methoden in drei Runden ausführen und Ergebnisse, Metriken und Nachweise erfassen.
 6. Unterschiede analysieren und den HTML-Bericht erzeugen.
 
 Ziel ist nicht, die neue Fähigkeit gewinnen zu lassen, sondern festzustellen, was sich verändert und ob die Belege eine Einführung rechtfertigen.
 
 ## HTML-Bericht
 
-1. **Abschließende Empfehlung**: einführen, nicht einführen oder unzureichende Belege; einschließlich geeigneter und ungeeigneter Szenarien.
-2. **Wert und Nutzen**: Ergebnisqualität, gesamte Bearbeitungszeit, Token, Kosten, Schritte, Fehler und Wiederholungen.
-3. **Aufrufnachweis**: Im letzten Abschnitt werden Befehle, Tool-Aufrufe, Ein- und Ausgaben, Logs, Zeitstempel, Task-IDs und Status beider Methoden getrennt gespeichert.
+1. **Entscheidungsübersicht**: zeigt zuerst beide Methoden, Urteil, Hauptgrund, Wertfrage und Testdatum.
+2. **Kernvergleich und Analyse**: zeigt aggregierte Daten aus drei Runden, Rundenergebnisse, Beobachtungen, externe Quellen, Vor- und Nachteile, konkrete Szenarien und Unsicherheiten.
+3. **Versuchsdesign und Nachweise**: erklärt Aufgabenauswahl, faire Bedingungen und Bewertung. Jede Runde öffnet zwei Zeitlinien; Modell- und Tool-Aufrufe sowie Rohlogs sind dem tatsächlichen Schritt zugeordnet.
 
 Nicht verfügbare Metriken erscheinen als „Nicht verfügbar“, nie als null. Geheimnisse müssen entfernt werden.
 
@@ -63,12 +63,12 @@ Die aktuelle Version verwendet ein festes, versioniertes Berichtsformat. Jeder B
 
 ## Grenzen
 
-- Ein Lauf pro Methode liefert richtungsweisende Belege, keine statistische Garantie.
-- Beide Methoden müssen dieselbe repräsentative Aufgabe erledigen können.
+- Drei repräsentative Aufgaben verringern den Zufall eines Einzellaufs, liefern aber weiterhin nur aufgabenspezifische Hinweise.
+- In jeder Runde müssen beide Methoden dieselben Eingaben und Kriterien verwenden.
 - Token und Kosten werden nur verglichen, wenn der Host sie bereitstellt.
 - Ist der Aufruf nicht nachweisbar, muss das Ergebnis „Unzureichende Belege“ lauten.
 - Headless-Ausführung wird als Protokoll gezeigt, nicht als Live-Aufzeichnung.
 
 ## Lizenz
 
-Derzeit ist keine Lizenzdatei enthalten. Ein öffentliches Repository gewährt nicht automatisch das Recht, das Projekt zu kopieren, zu ändern oder weiterzugeben.
+Das Projekt steht unter der [MIT-Lizenz](LICENSE).
